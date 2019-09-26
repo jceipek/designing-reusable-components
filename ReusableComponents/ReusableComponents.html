@@ -1,0 +1,1601 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>ReusableComponents</title><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color: #ffffff; --text-color: #333333; --select-text-bg-color: #B5D6FC; --select-text-font-color: auto; --monospace: "Lucida Console",Consolas,"Courier",monospace; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+body { margin: 0px; padding: 0px; height: auto; bottom: 0px; top: 0px; left: 0px; right: 0px; font-size: 1rem; line-height: 1.42857143; overflow-x: hidden; background-image: inherit; background-size: inherit; background-attachment: inherit; background-origin: inherit; background-clip: inherit; background-color: inherit; tab-size: 4; background-position: inherit inherit; background-repeat: inherit inherit; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; word-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 40px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+@media screen and (max-width: 500px) { 
+  body.typora-export { padding-left: 0px; padding-right: 0px; }
+  #write { padding-left: 20px; padding-right: 20px; }
+  .CodeMirror-sizer { margin-left: 0px !important; }
+  .CodeMirror-gutters { display: none !important; }
+}
+#write li > figure:last-child { margin-bottom: 0.5rem; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; }
+button, input, select, textarea { color: inherit; font-family: inherit; font-size: inherit; font-style: inherit; font-variant-caps: inherit; font-weight: inherit; font-stretch: inherit; line-height: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position: relative; }
+p { line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 2; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.701961); color: rgb(85, 85, 85); border-top-left-radius: 4px; border-top-right-radius: 4px; border-bottom-right-radius: 4px; border-bottom-left-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px !important; }
+tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right-width: 0px; background-color: inherit; }
+.CodeMirror-linenumber { }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background-image: inherit; background-size: inherit; background-attachment: inherit; background-origin: inherit; background-clip: inherit; background-color: inherit; position: relative !important; background-position: inherit inherit; background-repeat: inherit inherit; }
+.md-diagram-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; background-position: 0px 0px; background-repeat: initial initial; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print { 
+  body, html { border: 1px solid transparent; height: 99%; break-after: avoid-page; break-before: avoid-page; }
+  #write { margin-top: 0px; padding-top: 0px; border-color: transparent !important; }
+  .typora-export * { -webkit-print-color-adjust: exact; }
+  html.blink-to-pdf { font-size: 13px; }
+  .typora-export #write { padding-left: 32px; padding-right: 32px; padding-bottom: 0px; break-after: avoid-page; }
+  .typora-export #write::after { height: 0px; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background-color: rgb(204, 204, 204); display: block; overflow-x: hidden; background-position: initial initial; background-repeat: initial initial; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) { 
+  .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+  .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+  .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+  .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background-color: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; background-position: initial initial; background-repeat: initial initial; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.8; font-family: var(--monospace); }
+code { text-align: left; }
+a.md-print-anchor { white-space: pre !important; border: none !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; text-shadow: initial !important; background-position: 0px 0px !important; background-repeat: initial initial !important; }
+.md-inline-math .MathJax_SVG .noError { display: none !important; }
+.html-for-mac .inline-math-svg .MathJax_SVG { vertical-align: 0.2px; }
+.md-math-block .MathJax_SVG_Display { text-align: center; margin: 0px; position: relative; text-indent: 0px; max-width: none; max-height: none; min-height: 0px; min-width: 100%; width: auto; overflow-y: hidden; display: block !important; }
+.MathJax_SVG_Display, .md-inline-math .MathJax_SVG_Display { width: auto; margin: inherit; display: inline-block !important; }
+.MathJax_SVG .MJX-monospace { font-family: var(--monospace); }
+.MathJax_SVG .MJX-sans-serif { font-family: sans-serif; }
+.MathJax_SVG { display: inline; font-style: normal; font-weight: 400; line-height: normal; zoom: 90%; text-indent: 0px; text-align: left; text-transform: none; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; direction: ltr; max-width: none; max-height: none; min-width: 0px; min-height: 0px; border: 0px; padding: 0px; margin: 0px; }
+.MathJax_SVG * { transition: none; }
+.MathJax_SVG_Display svg { vertical-align: middle !important; margin-bottom: 0px !important; margin-top: 0px !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="mermaid"] svg, [lang="flow"] svg { max-width: 100%; height: auto; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom-width: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+
+
+/* Flowchart variables */
+/* Sequence Diagram variables */
+/* Gantt chart variables */
+.mermaid .label {
+  color: #323D47;
+}
+
+g.label {
+    color: #333;
+}
+
+.node rect,
+.node circle,
+.node ellipse,
+.node polygon {
+  fill: #BDD5EA;
+  stroke: #81B1DB;
+  stroke-width: 1px;
+}
+.edgePath .path {
+  stroke: lightgrey;
+}
+.edgeLabel {
+  background-color: #e8e8e8;
+}
+.cluster rect {
+  fill: #6D6D65 !important;
+  rx: 4 !important;
+  stroke: rgba(255, 255, 255, 0.25) !important;
+  stroke-width: 1px !important;
+}
+.cluster text {
+  fill: #F9FFFE;
+}
+.actor {
+  stroke: #81B1DB;
+  fill: #BDD5EA;
+}
+text.actor {
+  fill: black;
+  stroke: none;
+}
+.actor-line {
+  stroke: lightgrey;
+}
+.messageLine0 {
+  stroke-width: 1.5;
+  stroke-dasharray: "2 2";
+  marker-end: "url(file:///Users/julianceipek/Library/Application%20Support/abnerworks.Typora/themes/night/#arrowhead)";
+  stroke: lightgrey;
+}
+.messageLine1 {
+  stroke-width: 1.5;
+  stroke-dasharray: "2 2";
+  stroke: lightgrey;
+}
+#arrowhead {
+  fill: lightgrey !important;
+}
+#crosshead path {
+  fill: lightgrey !important;
+  stroke: lightgrey !important;
+}
+.messageText {
+  fill: lightgrey;
+  stroke: none;
+}
+.labelBox {
+  stroke: #81B1DB;
+  fill: #BDD5EA;
+}
+.labelText {
+  fill: #323D47;
+  stroke: none;
+}
+.loopText {
+  fill: lightgrey;
+  stroke: none;
+}
+text>tspan {
+  fill: inherit;
+}
+.loopLine {
+  stroke-width: 2;
+  stroke-dasharray: "2 2";
+  marker-end: "url(file:///Users/julianceipek/Library/Application%20Support/abnerworks.Typora/themes/night/#arrowhead)";
+  stroke: #81B1DB;
+}
+.note {
+  stroke: rgba(255, 255, 255, 0.25);
+  fill: #fff5ad;
+}
+.noteText {
+  fill: black;
+  stroke: none;
+  font-family: 'trebuchet ms', verdana, arial;
+  font-size: 14px;
+}
+/** Section styling */
+.section {
+  stroke: none;
+  opacity: 0.2;
+}
+.section0 {
+  fill: rgba(255, 255, 255, 0.3);
+}
+.section2 {
+  fill: #EAE8B9;
+}
+.section1,
+.section3 {
+  fill: white;
+  opacity: 0.2;
+}
+.sectionTitle0 {
+  fill: #F9FFFE;
+}
+.sectionTitle1 {
+  fill: #F9FFFE;
+}
+.sectionTitle2 {
+  fill: #F9FFFE;
+}
+.sectionTitle3 {
+  fill: #F9FFFE;
+}
+.sectionTitle {
+  text-anchor: start;
+  font-size: 11px;
+  text-height: 14px;
+}
+/* Grid and axis */
+.grid .tick {
+  stroke: rgba(255, 255, 255, 0.3);
+  opacity: 0.3;
+  shape-rendering: crispEdges;
+}
+.grid .tick text {
+  fill: lightgrey;
+  opacity: 0.5;
+}
+.grid path {
+  stroke-width: 0;
+}
+/* Today line */
+.today {
+  fill: none;
+  stroke: #DB5757;
+  stroke-width: 2px;
+}
+/* Task styling */
+/* Default task */
+.task {
+  stroke-width: 1;
+}
+.taskText {
+  text-anchor: middle;
+  font-size: 11px;
+}
+.taskTextOutsideRight {
+  fill: #323D47;
+  text-anchor: start;
+  font-size: 11px;
+}
+.taskTextOutsideLeft {
+  fill: #323D47;
+  text-anchor: end;
+  font-size: 11px;
+}
+/* Specific task settings for the sections*/
+.taskText0,
+.taskText1,
+.taskText2,
+.taskText3 {
+  fill: #323D47;
+}
+.task0,
+.task1,
+.task2,
+.task3 {
+  fill: #BDD5EA;
+  stroke: rgba(255, 255, 255, 0.5);
+}
+.taskTextOutside0,
+.taskTextOutside2 {
+  fill: lightgrey;
+}
+.taskTextOutside1,
+.taskTextOutside3 {
+  fill: lightgrey;
+}
+/* Active task */
+.active0,
+.active1,
+.active2,
+.active3 {
+  fill: #81B1DB;
+  stroke: rgba(255, 255, 255, 0.5);
+}
+.activeText0,
+.activeText1,
+.activeText2,
+.activeText3 {
+  fill: #323D47 !important;
+}
+/* Completed task */
+.done0,
+.done1,
+.done2,
+.done3 {
+  fill: lightgrey;
+}
+.doneText0,
+.doneText1,
+.doneText2,
+.doneText3 {
+  fill: #323D47 !important;
+}
+/* Tasks on the critical line */
+.crit0,
+.crit1,
+.crit2,
+.crit3 {
+  stroke: #E83737;
+  fill: #E83737;
+  stroke-width: 2;
+}
+.activeCrit0,
+.activeCrit1,
+.activeCrit2,
+.activeCrit3 {
+  stroke: #E83737;
+  fill: #81B1DB;
+  stroke-width: 2;
+}
+.doneCrit0,
+.doneCrit1,
+.doneCrit2,
+.doneCrit3 {
+  stroke: #E83737;
+  fill: lightgrey;
+  stroke-width: 1;
+  cursor: pointer;
+  shape-rendering: crispEdges;
+}
+.doneCritText0,
+.doneCritText1,
+.doneCritText2,
+.doneCritText3 {
+  fill: lightgrey !important;
+}
+.activeCritText0,
+.activeCritText1,
+.activeCritText2,
+.activeCritText3 {
+  fill: #323D47 !important;
+}
+.titleText {
+  text-anchor: middle;
+  font-size: 18px;
+  fill: lightgrey;
+}
+/*
+
+
+*/
+.node text {
+  font-family: 'trebuchet ms', verdana, arial;
+  font-size: 14px;
+}
+div.mermaidTooltip {
+  position: absolute;
+  text-align: center;
+  max-width: 200px;
+  padding: 2px;
+  font-family: 'trebuchet ms', verdana, arial;
+  font-size: 12px;
+  background: #6D6D65;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 100;
+}
+
+@charset "UTF-8";
+/* CSS Document */
+
+/** code highlight */
+
+.cm-s-inner .cm-variable,
+.cm-s-inner .cm-operator,
+.cm-s-inner .cm-property {
+    color: #b8bfc6;
+}
+
+.cm-s-inner .cm-keyword {
+    color: #C88FD0;
+}
+
+.cm-s-inner .cm-tag {
+    color: #7DF46A;
+}
+
+.cm-s-inner .cm-attribute {
+    color: #7575E4;
+}
+
+.CodeMirror div.CodeMirror-cursor {
+    border-left: 1px solid #b8bfc6;
+    z-index: 3;
+}
+
+.cm-s-inner .cm-string {
+    color: #D26B6B;
+}
+
+.cm-s-inner .cm-comment,
+.cm-s-inner.cm-comment {
+    color: #DA924A;
+}
+
+.cm-s-inner .cm-header,
+.cm-s-inner .cm-def,
+.cm-s-inner.cm-header,
+.cm-s-inner.cm-def {
+    color: #8d8df0;
+}
+
+.cm-s-inner .cm-quote,
+.cm-s-inner.cm-quote {
+    color: #57ac57;
+}
+
+.cm-s-inner .cm-hr {
+    color: #d8d5d5;
+}
+
+.cm-s-inner .cm-link {
+    color: #d3d3ef;
+}
+
+.cm-s-inner .cm-negative {
+    color: #d95050;
+}
+
+.cm-s-inner .cm-positive {
+    color: #50e650;
+}
+
+.cm-s-inner .cm-string-2 {
+    color: #f50;
+}
+
+.cm-s-inner .cm-meta,
+.cm-s-inner .cm-qualifier {
+    color: #b7b3b3;
+}
+
+.cm-s-inner .cm-builtin {
+    color: #f3b3f8;
+}
+
+.cm-s-inner .cm-bracket {
+    color: #997;
+}
+
+.cm-s-inner .cm-atom,
+.cm-s-inner.cm-atom {
+    color: #84B6CB;
+}
+
+.cm-s-inner .cm-number {
+    color: #64AB8F;
+}
+
+.cm-s-inner .cm-variable {
+    color: #b8bfc6;
+}
+
+.cm-s-inner .cm-variable-2 {
+    color: #9FBAD5;
+}
+
+.cm-s-inner .cm-variable-3 {
+    color: #1cc685;
+}
+
+.CodeMirror-selectedtext,
+.CodeMirror-selected {
+    background: #4a89dc;
+    color: #fff !important;
+    text-shadow: none;
+}
+
+.CodeMirror-gutters {
+    border-right: none;
+}
+@charset "UTF-8";
+/* CSS Document */
+
+/** markdown source **/
+.cm-s-typora-default .cm-header, 
+.cm-s-typora-default .cm-property
+{
+    color: #cebcca;
+}
+
+.CodeMirror.cm-s-typora-default div.CodeMirror-cursor{
+    border-left: 3px solid #b8bfc6;
+}
+
+.cm-s-typora-default .cm-comment {
+    color: #9FB1FF;
+}
+
+.cm-s-typora-default .cm-string {
+    color: #A7A7D9
+}
+
+.cm-s-typora-default .cm-atom, .cm-s-typora-default .cm-number {
+    color: #848695;
+    font-style: italic;
+}
+
+.cm-s-typora-default .cm-link {
+    color: #95B94B;
+}
+
+.cm-s-typora-default .CodeMirror-activeline-background {
+    background: rgba(51, 51, 51, 0.72);
+}
+
+.cm-s-typora-default .cm-comment, .cm-s-typora-default .cm-code {
+	color: #8aa1e1;
+}@import "";
+@import "";
+@import "";
+
+:root {
+    --bg-color:  #363B40;
+    --side-bar-bg-color: #2E3033;
+    --text-color: #b8bfc6;
+
+    --select-text-bg-color:#4a89dc;
+
+    --item-hover-bg-color: #0a0d16;
+    --control-text-color: #b7b7b7;
+    --control-text-hover-color: #eee;
+    --window-border: 1px solid #555;
+
+    --active-file-bg-color: rgb(34, 34, 34);
+    --active-file-border-color: #8d8df0;
+
+    --primary-color: #a3d5fe;
+
+    --active-file-text-color: white;
+    --item-hover-bg-color: #70717d;
+    --item-hover-text-color: white;
+    --primary-color: #6dc1e7;
+
+    --rawblock-edit-panel-bd: #333;
+}
+
+html {
+    font-size: 16px;
+}
+
+html,
+body {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    background: #363B40;
+    background: var(--bg-color);
+    fill: currentColor;
+    line-height: 1.625rem;
+}
+
+#write {
+    max-width: 914px;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea,
+div.code-tooltip-content {
+    color: #b8bfc6;
+    border-color: transparent;
+}
+
+div.code-tooltip,
+.md-hover-tip .md-arrow:after {
+    background: #333;
+}
+
+.popover.bottom > .arrow:after {
+    border-bottom-color: #333;
+}
+
+html,
+body,
+button,
+input,
+select,
+textarea {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+hr {
+    height: 2px;
+    border: 0;
+    margin: 24px 0 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: "Lucida Grande", "Corbel", sans-serif;
+    font-weight: normal;
+    clear: both;
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+    margin: 0;
+    padding: 0;
+    color: #DEDEDE
+}
+
+h1 {
+    font-size: 2.5rem;
+    /* 36px */
+    line-height: 2.75rem;
+    /* 40px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    letter-spacing: -1.5px;
+}
+
+h2 {
+    font-size: 1.63rem;
+    /* 24px */
+    line-height: 1.875rem;
+    /* 30px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    letter-spacing: -1px;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 1.17rem;
+    /* 18px */
+    line-height: 1.5rem;
+    /* 24px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    letter-spacing: -1px;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 1.12rem;
+    /* 16px */
+    line-height: 1.375rem;
+    /* 22px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    color: white;
+}
+
+h5 {
+    font-size: 0.97rem;
+    /* 16px */
+    line-height: 1.25rem;
+    /* 22px */
+    margin-bottom: 1.5rem;
+    /* 24px */
+    font-weight: bold;
+}
+
+h6 {
+    font-size: 0.93rem;
+    /* 16px */
+    line-height: 1rem;
+    /* 16px */
+    margin-bottom: 0.75rem;
+    color: white;
+}
+
+@media (min-width: 980px) {
+    h3.md-focus:before,
+    h4.md-focus:before,
+    h5.md-focus:before,
+    h6.md-focus:before {
+        color: #ddd;
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        position: absolute;
+        left: -1.642857143rem;
+        top: .357142857rem;
+        float: left;
+        font-size: 9px;
+        padding-left: 2px;
+        padding-right: 2px;
+        vertical-align: bottom;
+        font-weight: normal;
+        line-height: normal;
+    }
+
+    h3.md-focus:before {
+        content: 'h3';
+    }
+
+    h4.md-focus:before {
+        content: 'h4';
+    }
+
+    h5.md-focus:before {
+        content: 'h5';
+        top: 0px;
+    }
+
+    h6.md-focus:before {
+        content: 'h6';
+        top: 0px;
+    }
+}
+
+a {
+    text-decoration: none;
+    outline: 0;
+}
+
+a:hover {
+    outline: 0;
+}
+
+a:focus {
+    outline: thin dotted;
+}
+
+sup.md-footnote {
+    background-color: #555;
+    color: #ddd;
+}
+
+p {
+    -ms-word-wrap: break-word;
+    word-wrap: break-word;
+}
+
+p,
+ul,
+dd,
+ol,
+hr,
+address,
+pre,
+table,
+iframe,
+.wp-caption,
+.wp-audio-shortcode,
+.wp-video-shortcode {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    /* 24px */
+}
+
+li > blockquote {
+	margin-bottom: 0;
+}
+
+audio:not([controls]) {
+    display: none;
+}
+
+[hidden] {
+    display: none;
+}
+
+::-moz-selection {
+    background: #4a89dc;
+    color: #fff;
+    text-shadow: none;
+}
+
+*.in-text-selection,
+::selection {
+    background: #4a89dc;
+    color: #fff;
+    text-shadow: none;
+}
+
+ul,
+ol {
+    padding: 0 0 0 1.875rem;
+    /* 30px */
+}
+
+ul {
+    list-style: square;
+}
+
+ol {
+    list-style: decimal;
+}
+
+ul ul,
+ol ol,
+ul ol,
+ol ul {
+    margin: 0;
+}
+
+b,
+th,
+dt,
+strong {
+    font-weight: bold;
+}
+
+i,
+em,
+dfn,
+cite {
+    font-style: italic;
+}
+
+blockquote {
+    padding-left: 1.875rem;
+    margin: 0 0 1.875rem 1.875rem;
+    border-left: solid 2px #474d54;
+    padding-left: 30px;
+    margin-top: 35px;
+}
+
+pre,
+code,
+kbd,
+tt,
+var {
+    background: rgba(0, 0, 0, 0.05);
+    font-size: 0.875rem;
+    font-family: Monaco, Consolas, "Andale Mono", "DejaVu Sans Mono", monospace;
+}
+
+kbd {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #fff;
+    background-color: #333;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 rgba(0,0,0,.25);
+}
+
+pre.md-fences {
+    padding: 10px 10px 10px 30px;
+    margin-bottom: 20px;
+    background: #333;
+}
+
+.CodeMirror-gutters {
+    background: #333;
+    border-right: 1px solid transparent;
+}
+
+.enable-diagrams pre.md-fences[lang="sequence"] .code-tooltip,
+.enable-diagrams pre.md-fences[lang="flow"] .code-tooltip,
+.enable-diagrams pre.md-fences[lang="mermaid"] .code-tooltip {
+    bottom: -2.2em;
+    right: 4px;
+}
+
+code,
+kbd,
+tt,
+var {
+    padding: 2px 5px;
+}
+
+table {
+    max-width: 100%;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+th,
+td {
+    padding: 5px 10px;
+    vertical-align: top;
+}
+
+a {
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+hr {
+    background: #474d54;
+    /* variable */
+}
+
+h1 {
+    margin-top: 2em;
+}
+
+a {
+    color: #e0e0e0;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #fff;
+}
+
+.md-inline-math script {
+    color: #81b1db;
+}
+
+b,
+th,
+dt,
+strong {
+    color: #DEDEDE;
+    /* variable */
+}
+
+mark {
+    background: #D3D40E;
+}
+
+blockquote {
+    color: #9DA2A6;
+}
+
+table a {
+    color: #DEDEDE;
+    /* variable */
+}
+
+th,
+td {
+    border: solid 1px #474d54;
+    /* variable */
+}
+
+.task-list {
+    padding-left: 0;
+}
+
+.md-task-list-item {
+    padding-left: 1.25rem;
+}
+
+.md-task-list-item > input {
+    top: auto;
+}
+
+.md-task-list-item > input:before {
+    content: "";
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid #b8bfc6;
+    background-color: #363B40;
+    margin-top: -0.4rem;
+}
+
+.md-task-list-item > input:checked:before,
+.md-task-list-item > input[checked]:before {
+    content: '\221A';
+    /*◘*/
+    font-size: 0.625rem;
+    line-height: 0.625rem;
+    color: #DEDEDE;
+}
+
+/** quick open **/
+.auto-suggest-container {
+    border: 0px;
+    background-color: #525C65;
+}
+
+#typora-quick-open {
+    background-color: #525C65;
+}
+
+#typora-quick-open input{
+    background-color: #525C65;
+    border: 0;
+    border-bottom: 1px solid grey;
+}
+
+.typora-quick-open-item {
+    background-color: inherit;
+    color: inherit;
+}
+
+.typora-quick-open-item.active,
+.typora-quick-open-item:hover {
+    background-color: #4D8BDB;
+    color: white;
+}
+
+.typora-quick-open-item:hover {
+    background-color: rgba(77, 139, 219, 0.8);
+}
+
+.typora-search-spinner > div {
+  background-color: #fff;
+}
+
+#write pre.md-meta-block {
+    border-bottom: 1px dashed #ccc;
+    background: transparent;
+    padding-bottom: 0.6em;
+    line-height: 1.6em;
+}
+
+.btn,
+.btn .btn-default {
+    background: transparent;
+    color: #b8bfc6;
+}
+
+.ty-table-edit {
+    border-top: 1px solid gray;
+    background-color: #363B40;
+}
+
+.popover-title {
+    background: transparent;
+}
+
+.md-image>.md-meta {
+    color: #BBBBBB;
+    background: transparent;
+}
+
+.md-expand.md-image>.md-meta {
+    color: #DDD;
+}
+
+#write>h3:before,
+#write>h4:before,
+#write>h5:before,
+#write>h6:before {
+    border: none;
+    border-radius: 0px;
+    color: #888;
+    text-decoration: underline;
+    left: -1.4rem;
+    top: 0.2rem;
+}
+
+#write>h3.md-focus:before {
+    top: 2px;
+}
+
+#write>h4.md-focus:before {
+    top: 2px;
+}
+
+.md-toc-item {
+    color: #A8C2DC;
+}
+
+#write div.md-toc-tooltip {
+    background-color: #363B40;
+}
+
+.dropdown-menu .btn:hover,
+.dropdown-menu .btn:focus,
+.md-toc .btn:hover,
+.md-toc .btn:focus {
+    color: white;
+    background: black;
+}
+
+#toc-dropmenu {
+    background: rgba(50, 54, 59, 0.93);
+    border: 1px solid rgba(253, 253, 253, 0.15);
+}
+
+#toc-dropmenu .divider {
+    background-color: #9b9b9b;
+}
+
+.outline-expander:before {
+    top: 2px;
+}
+
+#typora-sidebar {
+    box-shadow: none;
+    border-right: 1px dashed;
+    border-right: none;
+}
+
+.sidebar-tabs {
+    border-bottom:0;
+}
+
+#typora-sidebar:hover .outline-title-wrapper {
+    border-left: 1px dashed;
+}
+
+.outline-title-wrapper .btn {
+    color: inherit;
+}
+
+.outline-item:hover {
+    border-color: #363B40;
+    background-color: #363B40;
+    color: white;
+}
+
+h1.md-focus .md-attr,
+h2.md-focus .md-attr,
+h3.md-focus .md-attr,
+h4.md-focus .md-attr,
+h5.md-focus .md-attr,
+h6.md-focus .md-attr,
+.md-header-span .md-attr {
+    color: #8C8E92;
+    display: inline;
+}
+
+.md-comment {
+    color: #5a95e3;
+    opacity: 1;
+}
+
+.md-inline-math g,
+.md-inline-math svg {
+    stroke: #b8bfc6 !important;
+    fill: #b8bfc6 !important;
+}
+
+[md-inline='inline_math'] {
+    color: #9CB2E9;
+}
+
+#math-inline-preview .md-arrow:after {
+    background: black;
+}
+
+.modal-content {
+    background: var(--bg-color);
+    border: 0;
+}
+
+.modal-title {
+    font-size: 1.5em;
+}
+
+.modal-content input {
+    background-color: rgba(26, 21, 21, 0.51);
+    color: white;
+}
+
+.modal-content .input-group-addon {
+    color: white;
+}
+
+.modal-backdrop {
+    background-color: rgba(174, 174, 174, 0.7);
+}
+
+.modal-content .btn-primary {
+    border-color: var(--primary-color);
+}
+
+.md-table-resize-popover {
+    background-color: #333;
+}
+
+.form-inline .input-group .input-group-addon {
+    color: white;
+}
+
+#md-searchpanel {
+    border-bottom: 1px dashed grey;
+}
+
+/** UI for electron */
+
+.context-menu,
+#spell-check-panel,
+#footer-word-count-info {
+    background-color: #42464A;
+}
+
+.context-menu.dropdown-menu .divider,
+.dropdown-menu .divider {
+    background-color: #777777;
+}
+
+footer {
+    color: inherit;
+}
+
+@media (max-width: 1000px) {
+    footer {
+        border-top: none;
+    }
+    footer:hover {
+        color: inherit;
+    }
+}
+
+#file-info-file-path .file-info-field-value:hover {
+    background-color: #555;
+    color: #dedede;
+}
+
+.megamenu-content,
+.megamenu-opened header {
+    background: var(--bg-color);
+}
+
+.megamenu-menu-panel h2,
+.megamenu-menu-panel h1,
+.long-btn {
+    color: inherit;
+}
+
+.megamenu-menu-panel input[type='text'] {
+    background: inherit;
+    border: 0;
+    border-bottom: 1px solid;
+}
+
+#recent-file-panel-action-btn {
+    background: inherit;
+    border: 1px grey solid;
+}
+
+.megamenu-menu-panel .dropdown-menu > li > a {
+    color: inherit;
+    background-color: #2F353A;
+    text-decoration: none;
+}
+
+.megamenu-menu-panel table td:nth-child(1) {
+    color: inherit;
+    font-weight: bold;
+}
+
+.megamenu-menu-panel tbody tr:hover td:nth-child(1) {
+    color: white;
+}
+
+.modal-footer .btn-default, 
+.modal-footer .btn-primary,
+.modal-footer .btn-default:not(:hover) {
+    border: 1px solid;
+    border-color: transparent;
+}
+
+.btn-default:hover, .btn-default:focus, .btn-default.focus, .btn-default:active, .btn-default.active, .open > .dropdown-toggle.btn-default {
+    color: white;
+    border: 1px solid #ddd;
+    background-color: inherit;
+}
+
+.modal-header {
+    border-bottom: 0;
+}
+
+.modal-footer {
+    border-top: 0;
+}
+
+#recent-file-panel tbody tr:nth-child(2n-1) {
+    background-color: transparent !important;
+}
+
+.megamenu-menu-panel tbody tr:hover td:nth-child(2) {
+    color: inherit;
+}
+
+.megamenu-menu-panel .btn {
+    border: 1px solid #eee;
+    background: transparent;
+}
+
+.mouse-hover .toolbar-icon.btn:hover,
+#w-full.mouse-hover,
+#w-pin.mouse-hover {
+    background-color: inherit;
+}
+
+.typora-node::-webkit-scrollbar {
+    width: 5px;
+}
+
+.typora-node::-webkit-scrollbar-thumb:vertical {
+    background: rgba(250, 250, 250, 0.3);
+}
+
+.typora-node::-webkit-scrollbar-thumb:vertical:active {
+    background: rgba(250, 250, 250, 0.5);
+}
+
+#w-unpin {
+    background-color: #4182c4;
+}
+
+#top-titlebar, #top-titlebar * {
+    color: var(--item-hover-text-color);
+}
+
+.typora-sourceview-on #toggle-sourceview-btn,
+#footer-word-count:hover,
+.ty-show-word-count #footer-word-count {
+    background: #333333;
+}
+
+#toggle-sourceview-btn:hover {
+    color: #eee;
+    background: #333333;
+}
+
+/** focus mode */
+.on-focus-mode .md-end-block:not(.md-focus):not(.md-focus-container) * {
+    color: #686868 !important;
+}
+
+.on-focus-mode .md-end-block:not(.md-focus) img,
+.on-focus-mode .md-task-list-item:not(.md-focus-container)>input {
+    opacity: #686868 !important;
+}
+
+.on-focus-mode li[cid]:not(.md-focus-container){
+    color: #686868;
+}
+
+.on-focus-mode .md-fences.md-focus .CodeMirror-code>*:not(.CodeMirror-activeline) *,
+.on-focus-mode .CodeMirror.cm-s-inner:not(.CodeMirror-focused) * {
+    color: #686868 !important;
+}
+
+.on-focus-mode .md-focus,
+.on-focus-mode .md-focus-container {
+    color: #fff;
+}
+
+.on-focus-mode #typora-source .CodeMirror-code>*:not(.CodeMirror-activeline) * {
+    color: #686868 !important;
+}
+
+
+/*diagrams*/
+#write .md-focus .md-diagram-panel {
+    border: 1px solid #ddd;
+    margin-left: -1px;
+    width: calc(100% + 2px);
+}
+
+/*diagrams*/
+#write .md-focus.md-fences-with-lineno .md-diagram-panel {
+    margin-left: auto;
+}
+
+.md-diagram-panel-error {
+    color: #f1908e;
+}
+
+.active-tab-files #info-panel-tab-file,
+.active-tab-files #info-panel-tab-file:hover,
+.active-tab-outline #info-panel-tab-outline,
+.active-tab-outline #info-panel-tab-outline:hover {
+    color: #eee;
+}
+
+.sidebar-footer-item:hover,
+.footer-item:hover {
+    background: inherit;
+    color: white;
+}
+
+.ty-side-sort-btn.active,
+.ty-side-sort-btn:hover,
+.selected-folder-menu-item a:after {
+    color: white;
+}
+
+#sidebar-files-menu {
+    border:solid 1px;
+    box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.79);
+    background-color: var(--bg-color);
+}
+
+.file-list-item {
+    border-bottom:none;
+}
+
+.file-list-item-summary {
+    opacity: 1;
+}
+
+.file-list-item.active:first-child {
+    border-top: none;
+}
+
+.file-node-background {
+    height: 32px;
+}
+
+.file-library-node.active>.file-node-content,
+.file-list-item.active {
+    color: white;
+    color: var(--active-file-text-color);
+}
+
+.file-library-node.active>.file-node-background{
+    background-color: rgb(34, 34, 34);
+    background-color: var(--active-file-bg-color);
+}
+.file-list-item.active {
+    background-color: rgb(34, 34, 34);
+    background-color: var(--active-file-bg-color);
+}
+
+#ty-tooltip {
+    background-color: black;
+    color: #eee;
+}
+
+.md-task-list-item>input {
+    margin-left: -1.3em;
+    margin-top: 0.3rem;
+    -webkit-appearance: none;
+}
+
+.md-mathjax-midline {
+    background-color: #57616b;
+    border-bottom: none;
+}
+
+footer.ty-footer {
+    border-color: #656565;
+}
+
+.ty-preferences .btn-default {
+    background: transparent;
+}
+.ty-preferences .btn-default:hover {
+    background: #57616b;
+}
+
+.ty-preferences select {
+    border: 1px solid #989698;
+    height: 21px;
+}
+
+.ty-preferences .nav-group-item.active {
+    background: var(--item-hover-bg-color);
+}
+
+.ty-preferences input[type="search"] {
+    border-color: #333;
+    background: #333;
+    line-height: 22px;
+    border-radius: 6px;
+    color: white;
+}
+
+.ty-preferences input[type="search"]:focus {
+    box-shadow: none;
+}
+
+[data-is-directory="true"] .file-node-content {
+    margin-bottom: 0;
+}
+
+.file-node-title {
+    line-height: 22px;
+}
+
+.html-for-mac .file-node-open-state, .html-for-mac .file-node-icon {
+    line-height: 26px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(230, 230, 230, 0.30);
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: rgba(230, 230, 230, 0.50);
+}
+
+#typora-sidebar:hover div.sidebar-content-content::-webkit-scrollbar-thumb:horizontal {
+    background: rgba(230, 230, 230, 0.30);
+}
+
+.nav-group-item:active {
+    background-color: #474d54;
+}
+
+ .typora-export li, .typora-export p, .typora-export,  .footnote-line {white-space: normal;} 
+</style>
+</head>
+<body class='typora-export' >
+<div  id='write'  class = 'is-mac'><p><img src='images/vlcsnap-2019-09-25-19h13m21s567.png' alt='vlcsnap-2019-09-25-19h13m21s567' referrerPolicy='no-referrer' /></p><p><img src='images/vlcsnap-2019-09-25-19h13m32s502.png' alt='vlcsnap-2019-09-25-19h13m32s502' referrerPolicy='no-referrer' /></p><p><span>Code reuse is something that, in general, everyone wants to be able to do. Either in-house or externally, you typically want to be able to solve a problem once, or license a solution from somebody, and just integrate it into your game and have it work. It&#39;s a goal that&#39;s common across many industries, not just the game industry.</span></p><p><span>So it&#39;s no surprise that there&#39;s lots of books on it, there&#39;s lots of people who speak on the topic, and that sort of thing.</span>
+<span>But, in general, what seems to typically be the case is that a lot of the things that you hear about this or think you know about this, when you actually try to put them into practice, it turns out that they don&#39;t really work that well.</span>
+<span>And you kind of sit there scratching your head going &quot;we </span><em><span>thought</span></em><span> we were doing some of this code reuse stuff well, or we we thought this component that we looked at to license had a good API, but when we actually tried to use it in our game, we start to feel like getting a little more NIH (Not Invented Here) about the problem, because God, it just didn&#39;t work out that well, it caused all sorts of problems and so on.&quot;</span></p><p><span>Where this lecture kind of comes from is:</span>
+<span>I worked at RAD game tools and I was responsible for doing Granny, which is RAD&#39;s character animation package. And at the outset of that, I made the first version of it according to what I thought were standard reusable code principles, and it turned out to just not really work very well.</span></p><p><span>A lot of people had a lot of trouble integrating it, and things just didn&#39;t go the way that I thought they should.</span>
+<span>So we spent a lot of time--when we went from version 1.0 to 2.0--kind of looking at that and going &quot;what happened there?&quot;, and we learned a lot of things and the second incarnation of the product actually is used in I think 400 different SKUs (unique products) which is a vast vast increase from the original one.</span></p><p><span>So with this lecture I kind of tried to go back and go &quot;okay what were all the things we learned about that, and how did we make that jump? Are they generally applicable? Are there things we can generalize on this: real rules we can use to get reuse in the game industry that are from practice (and not just some kind of theoretical thing that doesn&#39;t seem to really play out in practice)?</span></p><p><img src='images/vlcsnap-2019-09-25-19h22m30s812.png' alt='vlcsnap-2019-09-25-19h22m30s812' referrerPolicy='no-referrer' /></p><p><span>So before I get into it I wanted to quickly go over the types of reuse that we typically see.</span></p><ol start='' ><li><span>The first kind here on the left is what I call </span><em><span>&quot;Layer&quot;</span></em><span> which is the OpenGL or Direct3D kind of a thing where you&#39;ve got</span>
+<span>A) new code that you&#39;re writing on top, which is your game or something,</span>
+<span>B) you&#39;ve got reused code, which is the Layer which is the Direct3D part or whatever the API is that&#39;s provided to abstract</span>
+<span>C) some service that&#39;s down at the bottom, which is like the 3d</span>
+<span>hardware or something like this.</span>
+<span>This kind of reuse is pretty common now, and it seems to be working relatively well (although there&#39;s still some problems within that sort of thing).</span></li><li><span>The second kind is </span><em><span>&quot;Engine&quot;</span></em><span> code where the situation is kind of inverted.</span>
+<span>A) The reused code is up at the top making all the decisions--it&#39;s the majority of the system--and you&#39;re just writing</span>
+<span>B) this smaller subset of that, conforming to its rules, giving it</span>
+<span>information back to define your game, and</span>
+<span>C) it&#39;s pretty much responsible for ending up dealing with all the output and that sort of thing.</span></li><li><span>And then finally we have the third kind, which is kind of the new thing which hadn&#39;t been around really, in any successful way, up until very recently. These are </span><em><span>&quot;Components&quot;</span></em><span>, and those are things where it&#39;s still kind of like the layer situation where the new code is up at the top, and the game code is all in control, but there&#39;s these little pieces that you can license which not only accept input from you but actually give stuff back that actually determines how the game runs. They&#39;re tightly integrated, and these are things like character animation, physics, AI, that sort of thing. And they don&#39;t really talk to services directly; there&#39;s no well-defined output layer for them, they just give you stuff back and then you&#39;re responsible for kind of doing it.</span></li></ol><p><span>Now the reason those are important and the reason that Layers aren&#39;t the only thing that we need--I mean engines I&#39;m not really going to cover because that&#39;s just a totally separate topic--the reason that components are important is because if you look at layers, they&#39;re very limited.</span></p><p><img src='images/vlcsnap-2019-09-25-19h23m54s226.png' alt='vlcsnap-2019-09-25-19h23m54s226' referrerPolicy='no-referrer' /></p><p><span>They require there to be some well-defined service at the bottom that they&#39;re abstracting, like 3D hardware.</span></p><p><span>And if they don&#39;t have something like that, if you want something like AI where there&#39;s no agreed-upon standard for what the output is, then they just can&#39;t really exist. And similarly, if you have two layers that you&#39;re trying to use in the game simultaneously, well that just isn&#39;t going to work at all. If I have two things that expect to be talking to the 3D hardware, that can be a huge disaster, because each one wants control over it, and how do you broker between them? So it&#39;s no longer this clean &quot;I give something to it and it puts something out&quot;.</span></p><p><img src='images/vlcsnap-2019-09-25-19h13m53s412.png' alt='vlcsnap-2019-09-25-19h13m53s412' referrerPolicy='no-referrer' /></p><p><span>Components solve both of these problems. They don&#39;t need a service at the bottom, they can just be there. You give them data, they process it, they give data back, it&#39;s all good. And similarly, if there&#39;s one service--one output that you&#39;re dealing with that both components are concerned with--that&#39;s fine because the input is coming back into the game where you can broker between them, resolve conflicts, do anything you need.</span></p><p><img src='images/vlcsnap-2019-09-25-19h26m04s406.png' alt='vlcsnap-2019-09-25-19h26m04s406' referrerPolicy='no-referrer' /></p><p><span>Components are really the most powerful form of subsystem reuse that there is, and they&#39;re the ones that we happen to need to solve a lot of the problems of reuse for components we don&#39;t have currently. The problem with them is they&#39;re much harder to design, and the reason for that is this little back channel here:</span></p><p><img src='images/vlcsnap-2019-09-25-19h13m59s981.png' alt='vlcsnap-2019-09-25-19h13m59s981' referrerPolicy='no-referrer' /></p><p><span>It&#39;s a little simple arrow, but in reality the fact that it is coupled back to the game and you have to rely on what it&#39;s giving you to make gameplay decisions, to do all these things, really does mean that it&#39;s a vastly harder design problem than just output only.</span>
+<span>And that&#39;s not to say that Direct3D and OpenGL weren&#39;t hard to design, it&#39;s just that these are even harder, and that&#39;s unfortunate.</span></p><p><span>So what I&#39;m going to do here is:</span>
+<span>For a couple slides I&#39;m going to introduce a model for how to look at the way games integrate things--which may or may not be unique from how other industries integrate things--I don&#39;t have much experience with that. But for games there&#39;s a very specific way that integration typically happens with components.</span>
+<span>So I&#39;m going to go through a little bit of that, and then I&#39;m going to go into some really very in-depth code snippet kind of stuff where I take you through all of the different ways that you can use this model to look at what&#39;s happening in making decisions about either:</span></p><ul><li><p><span>&quot;Is some licensable API that I&#39;m going to use going to work well?&quot;</span></p><p><span>or</span></p></li><li><p><span>&quot;I&#39;m trying to design an API that I can reuse in-house or for other developers; what can I do to make those APIs better?&quot;</span></p></li></ul><p><img src='images/vlcsnap-2019-09-25-19h14m05s986.png' alt='vlcsnap-2019-09-25-19h14m05s986' referrerPolicy='no-referrer' /></p><p><span>So here&#39;s my little sort of pseudo graph.</span></p><p><span>The vertical axis here is how much work was done to integrate the particular API into our game, and down here is time.</span></p><p><span>And what some people tend to gloss over, if you read books about this sort of thing, is that integration isn&#39;t really something that you just sit down and </span><em><span>do</span></em><span>.</span></p><p><span>We don&#39;t one day decide to integrate physics into our game, spend a week on it, and then we&#39;re done, and that&#39;s the last we hear of it. </span><em><span>That&#39;s not what happens.</span></em></p><p><span>What really happens is: yes that that part of the process is over here somewhere--we do the initial integration and then it&#39;s in the game. But then in reality, usually as we go, we use a little bit more of it, and then we get to some point where we have some major push that we&#39;re trying to do.</span>
+<span>And at that point, we typically have to start getting more involved with the API because there&#39;s things we need to do. For example we have memory budgets we need to hit, we need to add some features that we didn&#39;t think we were going to need (or that we put off integrating, and now we need them for this demo, we need them for whatever we&#39;re trying to ship).</span>
+<span>And we get kind of this little spike there, and similarly that typically happens again, at least once, at the end of the project. When we&#39;re trying to ship, there&#39;s all of these hard constraints that we have to meet. So it really is an </span><em><span>evolving usage</span></em><span>: it goes from initial, where we may even just be prototyping a game (so we&#39;re not even doing the official integration), all the way till we&#39;re trying to ship and nail down every little last piece.</span></p><p><img src='images/vlcsnap-2019-09-25-19h14m12s836.png' alt='vlcsnap-2019-09-25-19h14m12s836' referrerPolicy='no-referrer' /></p><p><span>Okay so here&#39;s the abstract part, so try to put on your abstract cap.</span>
+<span>What I want to do is get you in the mindset of thinking about the options that you or other developers have for integrating a particular thing into their game: a particular component.</span>
+<span>I took </span><em><span>time</span></em><span> out of this now, so we&#39;re just looking at a single point in time. The amount of work to integrate something is on the vertical axis, and the amount of benefit to the game is on the horizontal axis, and these big blue circles are just representing options that the developer has for integration.</span>
+<span>When I go to integrate something like character animation into my game, there&#39;s a number of ways I could do it. I look at the game engine and I look at the component, and I go &quot;well, we could do something like this, we could wrap it like this, we could put it in over here, we can fork it and put part of it over here and over here.&quot; You&#39;ve got a number of ways in which you can integrate it.</span>
+<span>And typically as you go, the more integration work it is for you, typically the more benefit you could get, because the more tighter coupled you become to this component, the more things you can do with it.</span>
+<span>If you start managing its memory for it, then you&#39;re gonna get performance benefits, and there&#39;s all these kind of things as we go up in integration work.</span>
+<span>So what happens is when you initially integrate it, you&#39;ve got some minimum bar that you&#39;re trying to meet in terms of benefit:</span></p><p><img src='images/vlcsnap-2019-09-25-19h14m20s415.png' alt='vlcsnap-2019-09-25-19h14m20s415' referrerPolicy='no-referrer' /></p><p><span>We need these features for the game right now, so we&#39;re just going to try and meet that. And you have particularly smart programmers, so they&#39;re gonna kind of go &quot;well this is kind of the thing that&#39;s the least amount of work that gives me the most amount of benefit that meets the bar, right? But I could do a little more work and maybe get something that I thought was a little more beneficial, so maybe I will.&quot;</span>
+<span>You&#39;re gonna pick something kind of down here to get it in, get it working, get the game running, and get on with things.</span></p><p><img src='images/vlcsnap-2019-09-25-19h14m28s183.png' alt='vlcsnap-2019-09-25-19h14m28s183' referrerPolicy='no-referrer' /></p><p><span>Then as you go, at some point there&#39;s going to be some new requirements, you&#39;re going to need more benefits from this API. And when I say benefits, I don&#39;t necessarily mean features, I just mean there are things that you need from it:</span></p><ul><li><span>the ability to get its memory footprint down,</span></li><li><span>the ability to reclaim some processor time</span></li></ul><p><span>Those things are all considered part of this because they&#39;re integral to shipping the game.</span></p><p><span>So as this bar moves across you&#39;re going to start going &quot;okay well, we need to integrate a little more, we need to integrate a little more, we need to change what we&#39;re doing, call some different APIs, do that sort of thing.&quot;</span></p><p><span>And you move through this space of possibilities that you had.</span></p><p><span>And then finally, what happens if you get into trouble, is you get to some part where the requirements change:</span></p><p><img src='images/vlcsnap-2019-09-25-19h14m34s265.png' alt='vlcsnap-2019-09-25-19h14m34s265' referrerPolicy='no-referrer' /></p><p><span>And there is no easy jump to get you there. You have this thing you have to do, and maybe it&#39;s some hard budget that you have to meet, and you realize that the way that you were using the API, there just is no simple fix. There&#39;s no way that you can get, say, </span><em><span>streaming</span></em><span>, which you want to implement in your game, into this component in any reasonable amount of work. It&#39;s going to be this massive thing where you have to do all sorts of stuff behind its back and do all these kinds of things. So you end up looking at a situation like this where you&#39;re thinking &quot;wow, to get this extra thing that we needed to do to ship this game, we have to do a </span><em><span>massive</span></em><span> amount of work to deal with this component.&quot;</span></p><p><img src='images/vlcsnap-2019-09-25-19h14m41s722.png' alt='vlcsnap-2019-09-25-19h14m41s722' referrerPolicy='no-referrer' /></p><p><span>To summarize that, if the API has these little steps, and I want to meet this minimum bar of features that I&#39;ve got to get for this next drop, to go from unsolved to solved, I just want to take a little step. I want to do whatever I feel is the minimum work that I should generally have to do to get this thing in there. But if there is no option for that, then they typically will have to jump all the way to something which, while you had to do a ton of work to get there, really solved a lot more problems than you were looking to solve. You ended up doing a lot more management or a lot more work with this component than you would have liked, and maybe there are fringe benefits to that, but a lot of times those benefits aren&#39;t really realized to you, you just wanted to manage one little piece of it for the component, for example, but now you ended up having to manage </span><em><span>all</span></em><span> of its memory, let&#39;s say.</span></p><p><img src='images/vlcsnap-2019-09-25-19h14m47s792.png' alt='vlcsnap-2019-09-25-19h14m47s792' referrerPolicy='no-referrer' /></p><p><span>I call that an </span><em><span>Integration Discontinuity</span></em><span>, which where I&#39;m going along using this component, and all of a sudden I hit this wall, and I&#39;m like, &quot;man, this is a disaster.&quot; And unfortunately, they typically happen around ship time, just when it&#39;s most unfortunate to have such a thing happen.</span></p><p><img src='images/vlcsnap-2019-09-25-19h14m53s097.png' alt='vlcsnap-2019-09-25-19h14m53s097' referrerPolicy='no-referrer' /></p><p><span>I guess this a little like beating a dead horse, but just to go through it: if you think about this yellow line as how much work you actually did to integrate the product--meaning, I&#39;m actually doing this work, and I keep doing work, I do more work, and I do more work--when you have these discontinuities in there, what happens is, you&#39;re really doing </span><em><span>more work</span></em><span> than the </span><em><span>benefit that you are getting</span></em><span>. So when I have to do more work than the minimum that I wanted to do to get this feature in, then the actual benefit to your app isn&#39;t going up commensurate with the work. You&#39;re </span><em><span>spending a lot of extra work</span></em><span> to work </span><em><span>around this API</span></em><span> that you&#39;re forced to deal with.</span>
+<span>And this doesn&#39;t even </span><em><span>have</span></em><span> to be increasing, because what could happen is: if you&#39;re spending time integrating a component, you may find out that the way that you were integrating it isn&#39;t actually working, and you have to rip some of it out, redo the way you were doing it, throw out code you wrote to reintegrate it a different way. So you can actually end up going &quot;okay, we got to tear some out, we tried this other method, and that didn&#39;t work, so then we tried going around to this other way, and we finally found an end-run that worked, and now we keep going and so on.&quot;</span></p><p><span>I guess all I&#39;m trying to say with this graph is it&#39;s non-trivial when you have these API problems in there, it really can force you to blow out a </span><em><span>lot</span></em><span> of work, and that&#39;s why I posit that&#39;s the real problem.</span></p><p><img src='images/vlcsnap-2019-09-25-19h15m00s215.png' alt='The primary goal of component API design is to eliminate API discontinuities.' referrerPolicy='no-referrer' /></p><p><span>The goal that we&#39;re trying to solve when we design reusable APIs is to think about this, and to try to make it so that, at all times-- as people integrate the product--they are always able to do only what they think they should have to do to get the next thing that they need out of the API, and not waste all of this time.</span>
+<span>Because really when they use code--I mean from a licensor perspective, that&#39;s what the customer ends up remembering: they don&#39;t remember if you saved them some work at some point, they remember when you caused them this </span><em><span>huge disaster</span></em><span> right around ship time. And similarly, if you&#39;re the person doing that, you don&#39;t want that disaster, so this is really the thing that I think is most important.</span></p><p><img src='images/vlcsnap-2019-09-25-19h15m06s995.png' alt='vlcsnap-2019-09-25-19h15m06s995' referrerPolicy='no-referrer' /></p><p><span>Now unfortunately, with the current trends in API design, where you&#39;re kind of wrapping stuff up and doing a lot of encapsulation, doing a lot of insulation, what they actually do is they take the number of options that are available to the developer (which are these blue things as I said before) and they start to reduce them. They go &quot;you know what, you can&#39;t </span></p><p><img src='images/vlcsnap-2019-09-25-19h15m45s781.png' alt='vlcsnap-2019-09-25-19h15m45s781' referrerPolicy='no-referrer' /></p><p><span>really have access to these things, you can&#39;t</span></p><p><img src='images/vlcsnap-2019-09-25-19h15m47s372.png' alt='vlcsnap-2019-09-25-19h15m47s372' referrerPolicy='no-referrer' /></p><p><span>call these things that are calling these other things&quot;, and at some point sometimes you even get to the point where you look at an API and you&#39;re like &quot;you know what, there&#39;s only one thing I can do with this:&quot;</span></p><p><img src='images/vlcsnap-2019-09-25-19h15m54s106.png' alt='vlcsnap-2019-09-25-19h15m54s106' referrerPolicy='no-referrer' /></p><p><span>&quot;They&#39;ve totally walled me off, I have no options anymore, this is a disaster.&quot;</span></p><p><span>These kinds of components typically fail, but a lot of times we&#39;re stuck with just this kind of thing:</span></p><p><img src='images/vlcsnap-2019-09-25-19h16m02s787.png' alt='vlcsnap-2019-09-25-19h16m02s787' referrerPolicy='no-referrer' /></p><p><span>where you look and there&#39;s a low level or high level you would use. And I argue that really, we want things to look like this: </span></p><p><img src='images/vlcsnap-2019-09-25-19h16m09s861.png' alt='vlcsnap-2019-09-25-19h16m09s861' referrerPolicy='no-referrer' /></p><p><span>And ideally fill in this gap that I was talking about before.</span></p><p><img src='images/vlcsnap-2019-09-25-19h16m30s185.png' alt='vlcsnap-2019-09-25-19h16m30s185' referrerPolicy='no-referrer' /></p><p><span>That was very abstract, I drew a graph that had some blue points on it--that&#39;s all great, but how do I actually know, when I&#39;m looking at an API:</span></p><ul><li><span>Is it going to have these problems?</span></li><li><span>Are there discontinuities in there?</span></li><li><span>How many options does it really give me?</span></li></ul><p><span>Originally I only had four, in fact if you look in my lecture notes there were only four, but I was showing some of the slides to Chris Hecker and he said, &quot;you don&#39;t talk about flow control enough, you&#39;ve got to talk about flow control--it&#39;s implicit in all the things you&#39;re talking about but you&#39;re not talking about it&quot;.</span>
+<span>So I looked at it and he was totally right, so I added a fifth one which does really matter, so props to Chris for that.</span></p><p><span>The five things are, in order:</span></p><ul><li><em><span>Granularity</span></em><span>, which is to say that I have some API, and I can split it into smaller APIs. If I have an API A, I can replace it with two APIs that do the things that it did, but give me a little more control.</span></li><li><span>There&#39;s </span><em><span>Redundancy</span></em><span>, which is to say that there&#39;s an API that does something which is A, but I could alternatively call some other API which does the same thing B, only maybe it takes slightly different parameters, or it does it in a slightly different way, so I have some options there.</span></li><li><span>There&#39;s </span><em><span>Coupling</span></em><span>, which is when you have one thing and if you do that thing in the API, you&#39;re required to do some other things. So there&#39;s this hidden link in between them that you are not really able to overcome.</span></li><li><span>There&#39;s </span><em><span>Retention</span></em><span>, which is when the API has two things, and one&#39;s on your side and then the other is on their side, and you have to mirror them, like making a scene graph or something like this.</span></li><li><span>and finally there&#39;s </span><em><span>Flow Control</span></em><span>, which is: who&#39;s calling who? Am I calling them, is the component calling me? Am I calling it, and it&#39;s calling me back? What&#39;s going on here?</span></li></ul><p><span>The important thing to remember is these are just characteristics and each one of them has trade-offs which I&#39;ll talk about later.</span>
+<span>So it&#39;s not the case that some of them are </span><em><span>always</span></em><span> bad. Sometimes it&#39;s good to have less granularity, sometimes more, don&#39;t think of them as hard-coded &quot;we want all these five things&quot;.</span>
+<span>No, each one of them is just a characteristic and we&#39;ll talk about how to interpret them in a second.</span></p><p><img src='images/vlcsnap-2019-09-25-19h16m54s112.png' alt='vlcsnap-2019-09-25-19h16m54s112' referrerPolicy='no-referrer' /></p><p><span>Let&#39;s go through the kinds of granularity; some of them are non-obvious. </span></p><p><span>A) The most obvious thing is if I have something like </span><code>UpdateOrientation</code><span>, and what this function is supposed to do is: the API has some measure of my orientation that it&#39;s keeping, and it&#39;s got some measure of the change in orientation, and I want to go ahead and apply that change so now when I use the orientation, it&#39;s the new orientation.</span></p><p><span>A simple granularity change (B) is okay, I want to break that down into steps:</span></p><ul><li><span>I want to get the orientation myself,</span></li><li><span>I want to get the change in orientation myself from the API,</span></li><li><span>and then I want to set the thing with that change (and these are angles or something so that&#39;s no overloaded plus operator, it&#39;s just a regular 2d angle).</span></li></ul><p><span>That&#39;s the most </span><span>[</span><span>simple?</span><span>]</span><span> sign of granularity.</span>
+<span>The reason that I want that is because, hey, I may want to modify whatever is going to happen in there (C). I may not want it to just use it directly (the change that it has); I may want to play with it.</span></p><p><span>And similarly, the less obvious version of that (D) is: I may not even want to change it, I may want this to happen exactly the same way that it would have if I just called it, but I have this other thing that I want to have happen, so instead of modifying things by inserting myself in the middle, really all I&#39;m doing is I&#39;m separating when the API is going to do those two things and that may not be that important in other industries. But in the game initially that&#39;s crucial, because sometimes you thread things, sometimes you have things that you need to hold over till the end of the frame, so you really don&#39;t want to be in positions where you don&#39;t have that kind of control, so that kind of granularity is also important.</span></p><p><img src='images/vlcsnap-2019-09-25-19h16m59s248.png' alt='vlcsnap-2019-09-25-19h16m59s248' referrerPolicy='no-referrer' /></p><p><span>Let&#39;s talk about redundancy (because hopefully granularity is pretty clear). Redundancy in its most basic form is something like this: I wanted to pass a 3x3 matrix before (A), and now I want to pass a Quaternion (B), so the API gives me two calls and I can enter in either way and it just accepts the type of parameter that I was looking for, it doesn&#39;t do anything different.</span></p><p><span>(C) and (D) are a different way of looking at that, which is that hey, sometimes I figure that there should be these basic things that it can just do for me. I don&#39;t wanna have to make my own identity matrix and pass it, that sort of stuff. There&#39;s just constants that the API builds in that&#39;re easy for me to use and that way I just know it&#39;s taken care of.</span></p><p><span>And similarly, oftentimes there are things that I would do with the orientation and I just want it to do those basic operations for me to set the orientation, and that&#39;s (D) so those are just some different redundant ways of doing that.</span></p><p><span>Now the sort of subtle way of having redundancy is this kind here, where if you remember in the previous slide</span></p><p><img src='images/vlcsnap-2019-09-25-19h17m14s407.png' alt='vlcsnap-2019-09-25-19h17m14s407' referrerPolicy='no-referrer' /></p><p><span>We had this operation (B) where we&#39;re getting the orientation, getting the change in the orientation, and then setting it.</span></p><p><img src='images/vlcsnap-2019-09-25-19h17m17s861.png' alt='vlcsnap-2019-09-25-19h17m17s861' referrerPolicy='no-referrer' /></p><p><span>Well if I was to go up a level of granularity from that, I could have the option of bundling those three calls in two different ways:</span></p><p><span>I could bundle the first two calls and leave the third one at the the finer level of granularity (E), or I could bundle the second two calls (F) and leave this one at the finer level.</span>
+<span>So they&#39;re both kind of equivalent: these two snippets are at the same level of granularity, but they have different choices in redundancy in terms of: they have different choices in what to bundle, which makes a redundant API. That can typically be pretty useful--as you make coarser grained versions of an API--to have the user have the ability to choose which ones they&#39;re going to bundle and which ones they&#39;re not.</span></p><p><img src='images/vlcsnap-2019-09-25-19h17m20s749.png' alt='vlcsnap-2019-09-25-19h17m20s749' referrerPolicy='no-referrer' /></p><p><span>So now we get to coupling which is not really a trade-off thing; coupling is pretty much always bad, but it&#39;s usually also unavoidable in a lot of places. The simplest kind of coupling in an API (A) is when you have something that does things to lots of objects and you have no control over that. A very typical thing is </span><code>Simulate</code><span> in a physics simulator where I wanted some control over what was getting simulated because I have some special things that I want here, but maybe this API doesn&#39;t let me do that, so I have to have everything happen at once. Obviously that&#39;s bad coupling, that&#39;s inter-object coupling.</span></p><p><span>The other kind of coupling (B) is: hey, I&#39;ve got some APIs which depend on this one state that I set. So maybe I call </span><code>SetTime</code><span> and it retains this time information, but then lots of different APIs use that, so I&#39;m creating a hidden sort of coupling between those APIs in the sense that they all have to have this right ordering of: if I set the time and then call this, I can&#39;t then call the other thing which counted on the time being the thing from the previous frame so I have this hidden coupling that I have to think about in my head.</span></p><p><span>Snippet (C) is the kind of coupling you have in </span><code>glBegin</code><span> and </span><code>glEnd</code><span> for example, which is that there isn&#39;t any identification for a particular </span><em><span>lock</span></em><span> that I&#39;m doing, so I can only have one of them at any given time. I don&#39;t really get anything back from this and I don&#39;t pass anything into this, so there&#39;s really just this one implicit lock that either I am or I&#39;m not using and that couples it in the sense that two pieces of code can&#39;t do that, and you have to make sure that all the code is always serially doing something like this.</span></p><p><span>(D) is very simple, which is hey, if there are internal buffers, are those internal buffers going to be things that we have to pay attention to? So in this case if I was returning a </span><code>char*</code><span> for example, this is probably returning the same buffer as this, so I&#39;ve got this hidden coupling where </span><code>String1</code><span> actually becomes the same thing as </span><code>String2</code><span> here. Hopefully that doesn&#39;t happen too much in modern APIs but I figured I&#39;d mention it.</span></p><p><span>Snippet (E) is a more insidious form of coupling: it&#39;s when the allocation of something is coupled to its initialization, and a lot of APIs have this problem unfortunately. A lot of times, developers don&#39;t really want to have to be able to say &quot;get me the memory for this thing and initialize it&quot;. They might want to say &quot;I&#39;m going to provide the memory and then could you just initialize it in place?&quot; or &quot;you&#39;re managing the memory but I need to initialize this guy because I&#39;m reading it from this special stream that I have packed or whatever&quot;. So that&#39;s a kind of coupling where I bundle two things together that cannot ever be separated.</span></p><p><span>(F) is where I have coupling between some special type in the system. If I only accept a matrix for my orientation, if that&#39;s the only type that I accept here, then even if I have some representation of the matrix myself, I have to constantly make it with the API, I have to say: &quot;hey, make one of your special fancy matrix objects so that I can actually call your functions&quot;.</span></p><p><span>And the final kind of coupling (G) is when the API doesn&#39;t let you get away from depending on their file format, so in this case it&#39;s if the only way to get an object is to read that object with their file reading routine, I can&#39;t construct it myself with my own reading it in then I&#39;m dependent on their file I/O routines and their data format, and there&#39;s nothing I can do about that really.</span></p><p><img src='images/vlcsnap-2019-09-25-19h17m32s395.png' alt='vlcsnap-2019-09-25-19h17m32s395' referrerPolicy='no-referrer' /></p><p><span>Retention is pretty simple, so not many code snippets here.</span></p><p><span>The idea there is: if I have stuff that is data that I own or that I am the one who&#39;s in charge of but the API forces me to announce that data to it, and it keeps a copy, that&#39;s retention.</span></p><p><span>In (A) it&#39;s the simplest kind: I&#39;m going to set the time or I&#39;m going to set what I think the value of </span><code>Pi</code><span> should be for the application, then it just retains that information and is going to use it everywhere.</span></p><p><span>In (B), we have: &quot;I&#39;m going to tell you that this object is parented to this other object, so every time you do something like update the orientation, you&#39;re going to take that into consideration&quot;.</span></p><p><span>And then finally in (D) we have the kind where you&#39;re retaining services from the application so the API is going: &quot;when I open a file, I could call you back with some of these things.&quot; So it&#39;s going to retain the services that you provide it and use them whenever it would have used them in the middle of processing some of its various function calls.</span></p><p><img src='images/vlcsnap-2019-09-25-19h17m38s433.png' alt='vlcsnap-2019-09-25-19h17m38s433' referrerPolicy='no-referrer' /></p><p><span>Finally, we have flow control, and flow control is pretty easy to imagine. Pretend these are just stack traces and a measure of flow control is: &quot;who is calling who?&quot;</span></p><p><span>Is it the case that the game is on the bottom of the stack, then it calls into the library and that&#39;s always the way it looks that&#39;s all we get so library on top game on bottom?</span></p><p><span>Or do we have a situation where the game, which was originally calling the library, now gets called back and there&#39;s sort of library in between, game on either side of the stack.</span></p><p><span>Then we could get totally crazy and say a lot of times then, the game has to call the library for something, so we can keep </span><span>[</span><span>at it?</span><span>]</span><span> ad infinitum. If we allow this kind of flow control stuff to happen we can get these ridiculous stacks where I call the library, the library calls me back, I call the library, maybe it calls me back one more time.</span>
+<span>This is obviously a negative thing because the more this happens the more complex it is to visualize in your head what&#39;s going on in your relationship to this library. Furthermore, it can be really nasty where it has to call back one of your classes or you have to have </span><code>void*</code><span>s which tell it what the data is that you&#39;re going to need inside there because you no longer have your scope. There&#39;s a lot of complexity when you start to do some complicated kinds of flow control that aren&#39;t just (A).</span></p><p><img src='images/vlcsnap-2019-09-25-19h17m49s687.png' alt='vlcsnap-2019-09-25-19h17m49s687' referrerPolicy='no-referrer' /></p><p><span>And the code snippets for that are:</span></p><ul><li><span>(A) This is the most basic kind like we said before; I just call a function and it returns something, everyone&#39;s happy.</span></li><li><span>(B) is the slightly more complicated version where it&#39;s going to call me back, so I do open file and I get a callback for it.</span></li><li><span>(C) is just up here because it&#39;s the same as (B). If anyone thinks that (C) is not the same as (B), definitely rethink that because this is just a function pointer: a virtual function. There&#39;s a vtable somewhere so if you&#39;re inheriting from one of the API&#39;s classes, that&#39;s exactly the same thing as setting some file callbacks.</span></li><li><span>And then finally you could use exceptions (D) or something to transfer flow control, but hopefully that&#39;s not a big part of any licensable API.</span></li></ul><p><img src='images/vlcsnap-2019-09-25-19h18m05s247.png' alt='vlcsnap-2019-09-25-19h18m05s247' referrerPolicy='no-referrer' /></p><p><span>Here&#39;s the recap:</span></p><p><span>We have granularity and essentially what we do with that is we trade off flexibility for simplicity; the more coarser grain the granularity is, the simpler the API is to use because there&#39;s less calls, less things for the user to get wrong, etc... But we give up flexibility. As we go up there, we&#39;re at the point where they&#39;re really out of control: they don&#39;t have control, they&#39;re just telling you what to do and the API does it entirely the way that they want.</span></p><p><span>With redundancy it&#39;s really a trade-off of convenience versus orthogonality. If your thing is very redundant, then you&#39;re going to be very convenient cuz there&#39;s tons of these APIs to choose from for every different thing to do, but you&#39;re not very orthogonal --it&#39;s a little harder for the user to keep in their head because there isn&#39;t just one way of doing the things they&#39;re going to do, there&#39;s lots of different ways.</span></p><p><span>With coupling, there really isn&#39;t much of a trade-off, we&#39;d like the API to be as decoupled as possible because all it&#39;s doing is putting restrictions on what the programmer can and can&#39;t do: there&#39;s really no benefit to that one.</span></p><p><span>Retention is a synchronization versus automation thing where if I retain a lot of data, then it&#39;s hard because the user has to synchronize all that stuff and that&#39;s bad. Immediate-mode things are better because there&#39;s no synchronization involved where they have to constantly keep you updated, but you may lose some automation there, because if you have all this retained data, then the API can maybe automate things for you that it couldn&#39;t otherwise.</span></p><p><span>And finally flow control: again not much of a trade-off there, if you can get away with always having the game in control (and it calls the app and it returns to you) that&#39;s always simpler because you don&#39;t want to have to worry about these deep callback situations or how you get data down through through the library to you on the other side and so on.</span></p><p><img src='images/vlcsnap-2019-09-25-19h18m22s090.png' alt='vlcsnap-2019-09-25-19h18m22s090' referrerPolicy='no-referrer' /></p><p><span>The final thing that I want to mention about that is just that looking at all those trade-offs they&#39;re not necessarily constant throughout the course of the integration. When I first integrate a component into my game, I&#39;m probably looking for very low granularity so I&#39;m looking for even a very coarse-grained granularity approach and a lot of retention, because I just want to do something like load some characters off disk and animate them walking around and free them later. That&#39;s the level I&#39;m looking for when I&#39;m just in pre-production or doing my first integration into the game.</span></p><p><span>But as I get to the end of the project I typically need the reverse. I need a lot of control so I fine-grain confine granularity in several places that I really need to manhandle, and I don&#39;t want a lot of retention because I&#39;ve built all these data structures that say the way my game works and the less of that I have to mirror on the API side, the better. </span></p><p><img src='images/vlcsnap-2019-09-25-19h18m30s368.png' alt='vlcsnap-2019-09-25-19h18m30s368' referrerPolicy='no-referrer' /></p><p><span>Now I&#39;m going to look through actual code snippets that are not exactly the same as code snippets in a game but they&#39;re very very similar so we can look at what happens when some of these things are not at the proper level that they should be, just to give you a feel for:</span></p><ul><li><span>if you&#39;re designing API, how you should be looking at it,</span>
+<span>or</span></li><li><span>if you&#39;re evaluating an API, looking at what the consequences of that API are.</span></li></ul><p><img src='images/vlcsnap-2019-09-25-19h18m33s311.png' alt='vlcsnap-2019-09-25-19h18m33s311' referrerPolicy='no-referrer' /></p><p><span>Obviously I&#39;ve changed this, so none of these are specifically somebody&#39;s API, they&#39;re just very representative of the standard ones that are out there.</span></p><p><img src='images/vlcsnap-2019-09-25-19h18m37s946.png' alt='vlcsnap-2019-09-25-19h18m37s946' referrerPolicy='no-referrer' /></p><p><span>First thing let&#39;s look at game provided services.</span>
+<span>Here&#39;s a case (A) where I was calling this </span><code>ReadFile</code><span> thing in the API, and I was getting back whatever the thing is that it gives me back: some kind of object that I&#39;m going to use.</span></p><p><span>I want to stop it from from touching the disk; I&#39;m going to manage that because I&#39;m reading from my own database format or something like that.</span></p><p><span>What most APIs do--assuming they provide this at all, which hopefully they do--is we get something like snippet (B): I set some file callbacks, which is basically just me saying I&#39;m providing </span><code>fopen</code><span>, </span><code>fread</code><span>, and so on, so just call me when you would have called those.</span></p><p><span>Not only is it a problem for flow control because hey, now I&#39;m getting called back by the API, but it&#39;s also a problem for coupling, in a non-obvious way. And the reason that there&#39;s coupling here is because you&#39;ve </span><em><span>bundled</span></em><span> the concept of reading the file </span><em><span>with</span></em><span> interpreting it into this object that you can use. So I&#39;ve actually smacked two separate things together, one of which is loading and interpreting an actual chunk of data off the disk, and the other is interpreting it.</span></p><p><span>So even if I allow the user to do those operations, I haven&#39;t given them any control over when they happen, because they&#39;re still gonna happen, right at this call, and there&#39;s no way to separate those two things out.</span></p><p><span>If the user actually wanted to separate them out, what they would have to do is make heinously complicated versions of these that do caching behind somebody&#39;s back, or God knows what&#39;s gonna happen.</span></p><p><span>The much more decoupled way that very very few APIs do, but some do, is to give you the ability to just pass in some file data. I already read it, I want you to go ahead and interpret this into a thing for me. And that&#39;s more what you want to see, because if you want this kind of control, typically you want something that&#39;s a lot more like this, where I&#39;m just feeding it chunks and it&#39;s interpreting them into the type that I want. </span></p><p><span>Is that the most decoupled we can get? It&#39;s not.</span></p><p><img src='images/vlcsnap-2019-09-25-19h18m49s012.png' alt='vlcsnap-2019-09-25-19h18m49s012' referrerPolicy='no-referrer' /></p><p><span>You look at that and you go &quot;well, this is still something that&#39;s owned by them. The thing that&#39;s coming back came back from the API, and I had no control of it.&quot; That&#39;s got to have some memory somewhere, something&#39;s going on here. At the very least let&#39;s pretend that the file data that it&#39;s interpreting is compressed in some way, so at the very least it&#39;s got to decompress it first before it can be used. What&#39;s happening inside this call is: the API is allocating a buffer or decompressing into it and then returning me a pointer to some part of that. I could decouple it further; I can go like this (D) which is to say that I want it to decompress this raw file data into file data, and then it can make the thing I can use for me, and then I can get rid of this file data, because I don&#39;t need it anymore.</span></p><p><span>But the problem with that is it&#39;s still allocating memory, so I get right back to where I was before, where I have to then give it yet more callbacks (E). I was trying to eliminate them before but now I&#39;m right back to it, so I have to let it allocate the memory for me.</span></p><p><span>Finally, we get to F, which is the more properly decoupled version, which is to say that now I&#39;ve got a four line version of what was a one-line thing before, but now I have complete control:</span></p><ul><li><span>I get the size that I </span><em><span>will need</span></em><span> for this thing.</span></li><li><span>I </span><code>malloc</code><span> that or </span><code>new</code><span> it, or call my own special allocator or do whatever I want.</span></li><li><span>Then I decompress it, and then I ask it to make the thing.</span></li></ul><p><span>So now everything is entirely within my purview here, and all its doing is translating a pointer to something else.</span></p><p><span>We can still decouple it one further step. This is not necessary all the time, but for certain types of APIs it&#39;s crucial, and that is:</span></p><p><img src='images/vlcsnap-2019-09-25-19h19m02s277.png' alt='vlcsnap-2019-09-25-19h19m02s277' referrerPolicy='no-referrer' /></p><p><span>(F) is the snippet that we had, but what we really might want to do is something more like (G), where we&#39;re saying: I don&#39;t even want you to require me to call one of your functions before I can use some of this data. I don&#39;t want however your packed data format works to influence that. I want to say &quot;make one of these things and I&#39;m gonna read it in however </span><em><span>I</span></em><span> want to read it in.&quot; And that&#39;s important, because maybe I want to control exactly where that thing is placed with my own allocators, and read it directly in, and by the time we get to (H), we realize we didn&#39;t need the API at all for this process. It&#39;s a simple two line thing: if the data is transparent to us, we can just do this and have complete control, just as if was something in our game.</span></p><p><span>Notice we haven&#39;t really affected the way the API functions at all. All the rest of the API can still work exactly the same way, but now we&#39;ve removed it entirely from this process.</span></p><p><span>Again, I&#39;m not trying to suggest that the difference between (A) and (H) is always use (H) or anything like this. I&#39;m giving an example of the huge spread of ways in which we could do this one thing, and typically, you do end up wanting to do </span><em><span>this one</span></em><span> quite a bit in an average game for APIs that are tightly integrated.</span></p><p><span>(A) is good, and a lot of times the user will call that:</span></p><p><img src='images/vlcsnap-2019-09-25-19h44m24s127.png' alt='vlcsnap-2019-09-25-19h44m24s127' referrerPolicy='no-referrer' /></p><p><span>but (H) is also good, and you don&#39;t want to be in a situation where the only thing you have is (A):</span></p><p><img src='images/vlcsnap-2019-09-25-19h19m02s277.png' alt='vlcsnap-2019-09-25-19h19m02s277' referrerPolicy='no-referrer' /></p><p><img src='images/vlcsnap-2019-09-25-19h19m10s089.png' alt='vlcsnap-2019-09-25-19h19m10s089' referrerPolicy='no-referrer' /></p><p><span>Let&#39;s look at another common thing: </span><em><span>parameter redundancy</span></em><span>.</span></p><p><span>Parameter redundancy, like I said before, is the ability to call something in two different flavors, or multiple flavors, and so on.</span></p><p><span>In (A) I have the original version of the API&#39;s function, which inverts some transform, and let&#39;s pretend that the transform we&#39;re passing and the inverse we get back are both in the API&#39;s data type. That&#39;s their object or whatever it is.</span></p><p><span>The problem is when we start realizing that we have our own transform type, and we&#39;ve got to pass that in, and we end up with with something like (B) where I have a floating point vector of position and a floating point vector that&#39;s the rotation, and now I&#39;ve got to call the API to bundle it up into one of their things, and then, when I&#39;m done with their function, I&#39;ve got to call </span><code>CopyTransform</code><span> to get it out again, into my format.</span></p><p><span>That can get really heinous if </span><em><span>my version</span></em><span> (the object type that I&#39;m using for a transform) also has this process that has to happen. Then I&#39;ve got to (C)</span></p><ul><li><span>get it out of mine</span></li><li><span>put it into theirs</span></li><li><span>call their function</span></li><li><span>get it out of theirs</span></li><li><span>then put it back into mine</span></li></ul><p><span>And that seems kind of silly, because all we were doing is (A) and now we have to do all of (C).</span></p><p><span>It seems like a contrived example, but at the same time, I see this </span><em><span>all the time</span></em><span> in actual code. This sort of thing happens </span><em><span>all</span></em><span> the time! It&#39;s not a random thing, you&#39;re always currying back and forth between these types, and it ends up just being this kind of mess.</span></p><p><span>Really, what you want to do is get as close as possible to (D), which is where the API has several versions of this function because it </span><em><span>knows</span></em><span> that everyone has their own format for position and orientation, so let&#39;s try to provide as many of them as we can, to reduce the chances that they </span><em><span>have</span></em><span> to do this ridiculous dance.</span></p><p><span>In (D) we&#39;re saying if you&#39;ve got a quaternion, you can pass that directly into us. We&#39;ll just take these two parameters, modify them, and pass them back out to you.</span></p><p><img src='images/vlcsnap-2019-09-25-19h19m24s115.png' alt='vlcsnap-2019-09-25-19h19m24s115' referrerPolicy='no-referrer' /></p><p><span>Let&#39;s look at the transition between a coarse grained operation and a fine grained one.</span></p><p><span>In code snippet (A), I&#39;ve got a retained mode thing going on where the app has some kind of object called a </span><code>Node</code><span> which has some stuff in it, and I&#39;m asking it to update it, and then I&#39;m asking it to render it. Two operations on the node.</span></p><p><span>I&#39;ve highlighted the first one because maybe all I really want to do is change the way </span><em><span>that</span></em><span> operation works. The rendering is great, all the rendering is happy, but the updating is not doing the things that I want.</span></p><p><span>In code snippet (B), I&#39;ve expanded it out. And since I&#39;m not using the node structure anymore, as a developer I now have to duplicate all of the stuff that that thing did, (and I&#39;m just making up some stuff that it did here).</span></p><p><span>The update part did those three things; the render part did those five things.</span></p><p><span>As you can see, as a developer I&#39;m a little sad because I didn&#39;t really want to know all that render stuff. I didn&#39;t want to do any of that, but I had to do it all because I wanted to stop using that </span><code>Node</code><span> thing so I could get control over the update part. That&#39;s not very preferable, and if we look at that, what we really wanted to do is (C):</span></p><p><img src='images/vlcsnap-2019-09-25-19h19m33s766.png' alt='vlcsnap-2019-09-25-19h19m33s766' referrerPolicy='no-referrer' /></p><p><span>Have the exact same call that was there before, but now instead of using the bundled node type, I just pass the parts of the node type that I wanted.</span></p><p><span>This is a very easy thing for an API to do, but unfortunately almost none of them actually seem to do it. A lot of times when they have these kind of bundled constructs, they don&#39;t actually provide the </span><em><span>exact</span></em><span> same function in an unbundled way, which is really unfortunate.</span></p><p><span>Similarly, I could look at a further kind of granularity option (D), which is if they did want a little bit of control over one of the processes, maybe I even offer another level of granularity in </span><em><span>between</span></em><span> those two. Not only do I allow you to go from node to non-node so I can break up these two things and not have to worry about this one; maybe I also allow you to do part of the render in the API now and pass in this additional part. So I take a little bit of the process away from you, but you still do the rest of it and don&#39;t have to worry about it.</span></p><p><img src='images/vlcsnap-2019-09-25-19h19m38s844.png' alt='vlcsnap-2019-09-25-19h19m38s844' referrerPolicy='no-referrer' /></p><p><span>Here&#39;s the final example we&#39;re going to look at, which is the typical retained-mode API problem that we get into when you don&#39;t provide some of the ability to do things immediately.</span></p><p><span>I&#39;ve used the physics engine here because it&#39;s known for being very retained-mode heavy.</span></p><p><span>Snippet (A) is what you would typically see in a physics API:</span></p><ul><li><span>I&#39;m going to create this </span><code>Rocket</code></li><li><span>and this </span><code>Pole</code><span> that&#39;s stuck in the ground,</span></li><li><span>and I&#39;m going to create a joint between them--anyone who&#39;s ever played </span><a href='https://en.wikipedia.org/wiki/Rocket_Jockey'><span>Rocket Jockey</span></a><span> knows where this comes from</span></li><li><span>and I&#39;m gonna constrain the rocket to the pole, so that as the rocket goes, it&#39;s circling around the pole,</span></li><li><span>and then I call </span><code>Simulate</code><span> and it kind of just all magically works, and everyone&#39;s happy: my rocket is flying around; it&#39;s great!</span></li></ul><p><span>But what unfortunately that&#39;s not really very representative of what happens in game development. What typically happens is:</span></p><p><span>I&#39;ve got something that&#39;s some sampled thing that&#39;s very fine-grained, like &quot;is the user pressing the X-button?&quot;</span></p><p><span>What I have to do if this is what my API looks like is:</span></p><ul><li><span>if they&#39;re pushing the X-button, then if I don&#39;t already have one of these </span><code>Hookline</code><span>s in there, I&#39;ve got to make one,</span></li><li><span>and if I had one and they weren&#39;t pushing the button, then I&#39;ve got to delete it and remember that I deleted it.</span></li><li><span>And then I can </span><code>Simulate</code><span>. </span></li></ul><p><span>So what I&#39;m essentially doing there is: I&#39;m writing almost the </span><code>diff</code><span> for every part of my game where I </span><code>diff</code><span> their retained mode version with what I actually know to be going on in my game. And hopefully I did the diff properly and made all the right calls to change it up!</span></p><p><span>That is </span><em><span>really</span></em><span> heinous, when you end up working on an app like this.</span></p><p><span>I think probably most people in the audience have had to deal with this at some point if they&#39;ve ever used a heavily retained-mode API.</span></p><p><img src='images/vlcsnap-2019-09-25-19h19m47s402.png' alt='vlcsnap-2019-09-25-19h19m47s402' referrerPolicy='no-referrer' /></p><p><span>What I&#39;d </span><em><span>much rather</span></em><span> do is turn this ugly snippet (B) that I don&#39;t like into snippet (C). I mean this is all I was trying to do!</span></p><p><span>All I&#39;m trying to do is say</span></p><ul><li><span>&quot;do a joint between the rocket and the pole when the X-button is down.&quot;</span></li></ul><p><em><span>That&#39;s</span></em><span> what I was trying to do. Instead of writing (B) I want to be able to write (C) and that&#39;s the real difference between immediate-mode and retained-mode. Immediate-mode allows you to procedurally do something. So you&#39;ve got code, code is very powerful, you&#39;re making decisions in that code, and you want to be able to just dish the output of that code directly to the API and have it use it. You don&#39;t want to have to go through a </span><em><span>data intermediary</span></em><span> which is the retained part of it, which you constantly have to worry about how to differentially update.</span></p><p><span>I&#39;d like to remind everyone here, because I can only show so much on a slide, is that having a </span><code>DoJoint</code><span> call like this immediate-mode is much more powerful than if I, say, had just a boolean that I could turn on and off in a retained mode joint. The reason for that is: what if I have no idea what </span><code>Pole</code><span> the guy is gonna catch this time? I don&#39;t want to have to do stuff like create speculative joints between all the rockets and all the poles and then just turn the boolean on and off so I can have the nice immediate-mode feel. I don&#39;t want to do any of that stuff. So the idea behind immediate-mode is: I&#39;ve gone through the code, I figured out exactly what I want to do, I just want to call the API with it </span><em><span>right there</span></em><span>, and I don&#39;t want to have to worry about having set up a retained mode structure </span><em><span>previously</span></em><span> which would allow me to have that code look the way I want (which is what </span><code>boolean</code><span>s in a retained-mode API would do for you. So that&#39;s not a substitute.</span></p><p><img src='images/vlcsnap-2019-09-25-19h20m01s660.png' alt='Optimizing the five characteristics leads to an API which is gradually tiered, highly decoupled, has no retention at its most granular tier, and always lets the game dictate the flow of control.' referrerPolicy='no-referrer' /></p><p><span>Hopefully, I&#39;ve given you an idea of how those five characteristics work when you look at the code.</span></p><p><span>What ends up happening, I think, with most APIs--not that there&#39;s that many that have tried to do all this stuff--but when you when you look at them--and I&#39;ve talked some people who have actually done a bunch of this stuff and they</span>
+<span>seem to concur with me--when you follow these, either by intuition or because you&#39;ve sat down and actually looked at what they all are, the APIs that work the best for reuse across multiple projects that are very different from each other, wide reuse kinds of situations that people have a pleasant time with is:</span></p><ul><li><span>When you optimize these five characteristics, you get an API which has gradual tiers to it. There&#39;s lots of different kinds of ways that I can access this API, and I can gradually move between them as I need to.</span></li><li><span>They&#39;re highly decoupled, so I may even have multiple tiers of stuff that don&#39;t even necessarily have to couple to each other; they&#39;re very separated--if I decide to start getting finer-grained in one area, then I don&#39;t have to drag down everything there, they&#39;re all staying at the level that I roughly want.</span></li><li><span>They have no retained-mode stuff at their bottom, in other words, at the very very finest level that I can call this API, it is not retaining data (at least not that I know about). If it is it&#39;s behind the scenes--it&#39;s caching, its stuff they&#39;re doing for performance, but I am </span><em><span>not responsible</span></em><span> for doing that caching for them. And as you go up through the tiers, maybe there is some retained-mode. Sometimes I do want to just say </span><code>CreateRigidbody</code><span>, </span><code>CreateRigidbody</code><span>, </span><code>CreateJoint</code><span> . There&#39;s nothing wrong with that, but, by the time I get down to the part where I&#39;m telling the API I want control here, I don&#39;t expect that to be happening.</span></li><li><span>And then finally, I&#39;d say that you you pretty much never want to be in the situation of having the API dictate the flow control to you, because most of the time there&#39;s really just no reason for that.</span></li></ul><p><span>So that&#39;s what I see as the way APIs look when you&#39;ve really got this stuff dialed. And granted, like I was saying with Granny 1 and Granny 2 -- I think we got a lot of the stuff in Granny 2, but I look back at it now obviously, and there&#39;s tons of stuff I would do differently. So it&#39;s not like I&#39;m claiming that I&#39;ve ever made an API which does all these things perfectly. But definitely, as you feel like you&#39;re making APIs better, I feel like they go towards this. And I think over the next few years, we&#39;ll start seeing APIs that if they can do this, we&#39;ll get more towards that perfect point where all these things are working together properly.</span></p><p><img src='images/vlcsnap-2019-09-25-19h20m09s149.png' alt='And now, the crib sheet.' referrerPolicy='no-referrer' /></p><p><span>Some of you may may not have wanted to spend a full 50 minutes talking about this stuff so right now I&#39;ve summarized it all into just a minute&#39;s worth, so you can get it all </span><em><span>right now</span></em><span>. If you&#39;re designing an API or if you&#39;re about to evaluate an API, these couple slides should give you everything that you need to know. To cheat on the exam.</span></p><p><img src='images/vlcsnap-2019-09-25-19h20m13s490.png' alt='vlcsnap-2019-09-25-19h20m13s490' referrerPolicy='no-referrer' /></p><ul><li><p><span>The first and second thing that you need to know (and this is kind of obvious but I just wanted to state it because most of this lecture is about the more detailed stuff) is: </span><strong><span>always write the usage code first</span></strong><span>.</span></p><p><span>When you sit down to design an API, always write all of the examples of using it that you can think of. Write those first. Don&#39;t start by opening up an </span><code>.h</code><span> file and start writing class declaration or something like that. Start by writing user code. And furthermore, if you&#39;ve got a game sitting around, which a lot of you do, pretend you&#39;re integrating it. Pretend you have the magical API that does everything you want, go into that game, and integrate it through! And look at what you came up with! That&#39;s the first-pass API. That&#39;s the best first-pass API you&#39;re going to get. Because all of your intuition is enabled there naturally, </span><em><span>and</span></em><span> you&#39;ve already got all the constraints of that game already playing into it. So you&#39;ve got a really good first example there.</span></p><p><span>Furthermore, if you&#39;re evaluating an API, you may </span><em><span>think</span></em><span> that the best thing to do is go read the documentation of the tools that you&#39;re potentially evaluating. </span><strong><span>Don&#39;t do that yet!</span></strong><span> Pretend you have the perfect one you want. Pretend to integrate it into the game you&#39;ve got for a day or two, look at what you came up with, and now when you evaluate those components from the different vendors, go: &quot;how close does this match what I&#39;m going to do?&quot; Don&#39;t think in their terms first! Think in your terms first, and then as you evaluate your APIs, go like: &quot;which one of these things links up with me?&quot; Anyway, most of lecture was not on that, but I figured it was very important to mention, because a lot of people won&#39;t do that.</span></p></li></ul><p><span>So now I get to the stuff that hopefully this lecture has argued is the right thing to do:</span></p><p><img src='images/vlcsnap-2019-09-25-19h20m21s928.png' alt='vlcsnap-2019-09-25-19h20m21s928' referrerPolicy='no-referrer' /></p><ul><li><span>The first thing is that any kind of retained-mode contract this API puts forth, I should be able to do the exact same thing in immediate-mode by just calling a function with the things that the retained-mode structure had in it. And that was the thing about the </span><code>UpdateNode</code><span>, </span><code>RenderNode</code><span> thing. I should always be able to have the non-node version of those, so I can just call them immediately. What that does is that it allows you to transition from the retained-mode to a more finer controlled immediate-mode, when you need to. If you don&#39;t have those, then when you need to transition, you&#39;re gonna have to go: &quot;oh my god! What was that node thing doing? I don&#39;t even know, I gotta go learn about that now, etc...&quot;</span></li><li><span>Second thing: anytime there&#39;s callbacks or inheritance, there should be an equivalent way to just make an API call that doesn&#39;t have to use either of those things. If you ever see something that requires inheritance or requires you to use callbacks, then that is giving up both flow control, and it is coupling you, so you should never see that. If you see something like that, that&#39;s a red flag.</span></li><li><span>Third thing: no API should ever require you to use a specific data type of its own if you know full well that your game and probably every other game in the universe has their own version of that data type. The last thing you need is for you to go license three components from three different vendors that all use different </span><code>Vector</code><span> types and you&#39;ve got to use all three different </span><code>Vector</code><span> types in various places of your app, because that&#39;s what they expect. That&#39;s the last thing you want to have happen.</span></li><li><span>Number four: any API function that you would not consider atomic for purposes of writing your game--if you think there&#39;s any way you might not consider that thing atomic at any time during integration--then it should be able to be replaced by between ~2-4 different APIs that replace it, that are more granular. And that doesn&#39;t count maybe accessor functions, but the actual physical operational calls. Because if you look at something and you think &quot;that thing looks a little high level to me and I don&#39;t see any way to break it down further,&quot; then that&#39;s a really good example of where some point deep in the ship process you&#39;re gonna have to hope you can get one of their API developers on the phone to put in some backdoor access for you or something like that. And that&#39;s </span><em><span>really bad</span></em><span>. </span></li></ul><p><span>And the final four things:</span></p><p><span> </span><img src='images/vlcsnap-2019-09-25-19h20m35s095.png' alt='vlcsnap-2019-09-25-19h20m35s095' referrerPolicy='no-referrer' /></p><ul><li><span>Any data which doesn&#39;t have a reason for being opaque should be transparent. If you just have data </span><code>struct</code><span>s that the API is using for things, those things should not be opaque. You always have the </span><em><span>choice</span></em><span> as a developer of not touching the data structures of the API. So if you&#39;re concerned about touching an internal structure or something like that, and having that break when the API gets updated, you can always decide not to do it. There&#39;s nothing forcing you to go look at some of the structures that the API defines. But when it comes down to ship time, you may find that you want that access to do some things in certain places in your app, and if they aren&#39;t exposed to you, then you&#39;ve got this problem where you&#39;d better hope the API has actual calls that do the sorts of stuff you need directly, or you&#39;re going to be in </span><em><span>big trouble</span></em><span>. So the idea is you should look through it, and while you shouldn&#39;t expect to use all of those things, you should try to make sure that they&#39;re there for when you </span><em><span>do</span></em><span> need them.</span></li><li><span>You should never have to use their resource management (which means memory management, file management, string management, and so on).</span></li><li><span>You should never have to use their file format.</span></li><li><span>You should always be able to get full source code to the runtime.</span></li></ul></div>
+</body>
+</html>
