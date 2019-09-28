@@ -7,7 +7,7 @@ You can learn more about the talk and its historical context on Casey's blog [he
 
 I don't claim any ownership of the ideas or content; any mistakes are my own. I am deeply grateful for Casey's work, including [Handmade Hero](https://handmadehero.org), "an ongoing project to create a complete, professional-quality game accompanied by videos that explain every single line of its source code." If you find this material useful and have the means, please consider supporting him.
 
-[Julian Ceipek](https://jceipek.com)
+\- [Julian Ceipek](https://jceipek.com)
 
 # Designing and Evaluating Reusable Components
 
