@@ -1,3 +1,16 @@
+# Editor's Note
+Casey Muratori's 2004 lecture "Designing and Evaluating Reusable Components" is my favorite resource on API design. The content has (to my knowledge) only been available in the form of a 50 minute video lecture. Unfortunately, that format isn't accessible to some audiences.
+
+The following is my attempt at a manual transcript of the lecture, with minor edits to aid readability and some additional annotations to assist screen readers. Note that I sadly haven't yet had the chance to transcribe the code snippets, which may be a problem for some readers. 
+
+You can learn more about the talk and its historical context on Casey's blog [here](https://caseymuratori.com/blog_0024). You can also find the 50 minute video version of the lecture there, if that is how you learn.
+
+I don't claim any ownership of the ideas or content; any mistakes are my own. I am deeply grateful for Casey's work, including [Handmade Hero](https://handmadehero.org), "an ongoing project to create a complete, professional-quality game accompanied by videos that explain every single line of its source code." If you find this material useful and have the means, please consider supporting him.
+
+[Julian Ceipek](https://jceipek.com)
+
+# Designing and Evaluating Reusable Components
+
 ![Designing and Evaluating Reusable Components - Casey Muratori - casey@mollyrocket.com](images/vlcsnap-2019-09-25-19h13m21s567.png)
 
 ![Code reuse. Sigh.](images/vlcsnap-2019-09-25-19h13m32s502.png)
