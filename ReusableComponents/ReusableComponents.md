@@ -1,6 +1,6 @@
-![vlcsnap-2019-09-25-19h13m21s567](images/vlcsnap-2019-09-25-19h13m21s567.png)
+![Designing and Evaluating Reusable Components - Casey Muratori - casey@mollyrocket.com](images/vlcsnap-2019-09-25-19h13m21s567.png)
 
-![vlcsnap-2019-09-25-19h13m32s502](images/vlcsnap-2019-09-25-19h13m32s502.png)
+![Code reuse. Sigh.](images/vlcsnap-2019-09-25-19h13m32s502.png)
 
 Code reuse is something that, in general, everyone wants to be able to do. Either in-house or externally, you typically want to be able to solve a problem once, or license a solution from somebody, and just integrate it into your game and have it work. It's a goal that's common across many industries, not just the game industry.
 
@@ -16,7 +16,7 @@ So we spent a lot of time--when we went from version 1.0 to 2.0--kind of looking
 
 So with this lecture I kind of tried to go back and go "okay what were all the things we learned about that, and how did we make that jump? Are they generally applicable? Are there things we can generalize on this: real rules we can use to get reuse in the game industry that are from practice (and not just some kind of theoretical thing that doesn't seem to really play out in practice)?
 
-![vlcsnap-2019-09-25-19h22m30s812](images/vlcsnap-2019-09-25-19h22m30s812.png)
+![Three types of reuse diagram: Layer vs Engine vs Component](images/vlcsnap-2019-09-25-19h22m30s812.png)
 
 So before I get into it I wanted to quickly go over the types of reuse that we typically see.
 
@@ -35,23 +35,23 @@ C) it's pretty much responsible for ending up dealing with all the output and th
 
 3. And then finally we have the third kind, which is kind of the new thing which hadn't been around really, in any successful way, up until very recently. These are _"Components"_, and those are things where it's still kind of like the layer situation where the new code is up at the top, and the game code is all in control, but there's these little pieces that you can license which not only accept input from you but actually give stuff back that actually determines how the game runs. They're tightly integrated, and these are things like character animation, physics, AI, that sort of thing. And they don't really talk to services directly; there's no well-defined output layer for them, they just give you stuff back and then you're responsible for kind of doing it.
 
-Now the reason those are important and the reason that Layers aren't the only thing that we need--I mean engines I'm not really going to cover because that's just a totally separate topic--the reason that components are important is because if you look at layers, they're very limited.
+Now the reason those are important and the reason that Layers aren't the only thing that we need--I mean engines I'm not really going to cover because that's just a totally separate topic--the reason that components are important is because if you look at layers, they're very limited:
 
-![vlcsnap-2019-09-25-19h23m54s226](images/vlcsnap-2019-09-25-19h23m54s226.png)
+![Layers alone are insufficient: Layers require services (standards) and Layers can conflict](images/vlcsnap-2019-09-25-19h23m54s226.png)
 
 They require there to be some well-defined service at the bottom that they're abstracting, like 3D hardware.
 
 And if they don't have something like that, if you want something like AI where there's no agreed-upon standard for what the output is, then they just can't really exist. And similarly, if you have two layers that you're trying to use in the game simultaneously, well that just isn't going to work at all. If I have two things that expect to be talking to the 3D hardware, that can be a huge disaster, because each one wants control over it, and how do you broker between them? So it's no longer this clean "I give something to it and it puts something out".
 
-![vlcsnap-2019-09-25-19h13m53s412](images/vlcsnap-2019-09-25-19h13m53s412.png)
+![Components provide solution: Service not required and Conflicts resolved in game](images/vlcsnap-2019-09-25-19h13m53s412.png)
 
 Components solve both of these problems. They don't need a service at the bottom, they can just be there. You give them data, they process it, they give data back, it's all good. And similarly, if there's one service--one output that you're dealing with that both components are concerned with--that's fine because the input is coming back into the game where you can broker between them, resolve conflicts, do anything you need.
 
-![vlcsnap-2019-09-25-19h26m04s406](images/vlcsnap-2019-09-25-19h26m04s406.png)
+![Components solve most remaining reuse problems but are significantly harder to design.](images/vlcsnap-2019-09-25-19h26m04s406.png)
 
 Components are really the most powerful form of subsystem reuse that there is, and they're the ones that we happen to need to solve a lot of the problems of reuse for components we don't have currently. The problem with them is they're much harder to design, and the reason for that is this little back channel here:
 
-![vlcsnap-2019-09-25-19h13m59s981](images/vlcsnap-2019-09-25-19h13m59s981.png)
+![Components are integral diagram: The Game sends info to the component, and more importantly, the Component sends info to the Game](images/vlcsnap-2019-09-25-19h13m59s981.png)
 
 It's a little simple arrow, but in reality the fact that it is coupled back to the game and you have to rely on what it's giving you to make gameplay decisions, to do all these things, really does mean that it's a vastly harder design problem than just output only.
 And that's not to say that Direct3D and OpenGL weren't hard to design, it's just that these are even harder, and that's unfortunate.
@@ -66,7 +66,7 @@ So I'm going to go through a little bit of that, and then I'm going to go into s
 
 - "I'm trying to design an API that I can reuse in-house or for other developers; what can I do to make those APIs better?"
 
-![vlcsnap-2019-09-25-19h14m05s986](images/vlcsnap-2019-09-25-19h14m05s986.png)
+![Integration grows in spurts line graph: the slope of integration work having been completed is initially steep until initial integration and then becomes much less intense between Initial and Major Demo, Major Demo and First Beta, but there are sharp spikes of integration work right before Major Demo and right before First Beta](images/vlcsnap-2019-09-25-19h14m05s986.png)
 
 So here's my little sort of pseudo graph.
 
@@ -80,7 +80,7 @@ What really happens is: yes that that part of the process is over here somewhere
 And at that point, we typically have to start getting more involved with the API because there's things we need to do. For example we have memory budgets we need to hit, we need to add some features that we didn't think we were going to need (or that we put off integrating, and now we need them for this demo, we need them for whatever we're trying to ship).
 And we get kind of this little spike there, and similarly that typically happens again, at least once, at the end of the project. When we're trying to ship, there's all of these hard constraints that we have to meet. So it really is an _evolving usage_: it goes from initial, where we may even just be prototyping a game (so we're not even doing the official integration), all the way till we're trying to ship and nail down every little last piece.
 
-![vlcsnap-2019-09-25-19h14m12s836](images/vlcsnap-2019-09-25-19h14m12s836.png)
+![Integration options scatterplot: integration options are spread out so that there's roughly more benefit to the game with more integration work, but there are gaps where there's no nearby options for greater benefit without a sharp increase in required integration work](images/vlcsnap-2019-09-25-19h14m12s836.png)
 
 Okay so here's the abstract part, so try to put on your abstract cap.
 What I want to do is get you in the mindset of thinking about the options that you or other developers have for integrating a particular thing into their game: a particular component.
@@ -90,12 +90,12 @@ And typically as you go, the more integration work it is for you, typically the 
 If you start managing its memory for it, then you're gonna get performance benefits, and there's all these kind of things as we go up in integration work.
 So what happens is when you initially integrate it, you've got some minimum bar that you're trying to meet in terms of benefit:
 
-![vlcsnap-2019-09-25-19h14m20s415](images/vlcsnap-2019-09-25-19h14m20s415.png)
+![Integration options scatterplot annotated with a "Minimum Initial Feature Set" line. Some integration options are now insufficiently beneficial. Here, the integrators have selected an option that offers quite a bit more benefit to the game than strictly required, but with only a bit more integration work than the cheapest viable option](images/vlcsnap-2019-09-25-19h14m20s415.png)
 
 We need these features for the game right now, so we're just going to try and meet that. And you have particularly smart programmers, so they're gonna kind of go "well this is kind of the thing that's the least amount of work that gives me the most amount of benefit that meets the bar, right? But I could do a little more work and maybe get something that I thought was a little more beneficial, so maybe I will."
 You're gonna pick something kind of down here to get it in, get it working, get the game running, and get on with things.
 
-![vlcsnap-2019-09-25-19h14m28s183](images/vlcsnap-2019-09-25-19h14m28s183.png)
+![Integration options scatterplot annotated with a path showing the integration options the integrators chose over time. So far, each step has required only marginally more work than the one before while always increasing the benefit to the game](images/vlcsnap-2019-09-25-19h14m28s183.png)
 
 Then as you go, at some point there's going to be some new requirements, you're going to need more benefits from this API. And when I say benefits, I don't necessarily mean features, I just mean there are things that you need from it:
 
@@ -110,19 +110,19 @@ And you move through this space of possibilities that you had.
 
 And then finally, what happens if you get into trouble, is you get to some part where the requirements change:
 
-![vlcsnap-2019-09-25-19h14m34s265](images/vlcsnap-2019-09-25-19h14m34s265.png)
+![Integration options scatterplot annotated with a line indicating the "New Requirements". Relative to the current state of the integration, the only options that satisfy the new requirements require a vast expenditure of additional integration work when compared with the work done between each of the previous steps.](images/vlcsnap-2019-09-25-19h14m34s265.png)
 
 And there is no easy jump to get you there. You have this thing you have to do, and maybe it's some hard budget that you have to meet, and you realize that the way that you were using the API, there just is no simple fix. There's no way that you can get, say, _streaming_, which you want to implement in your game, into this component in any reasonable amount of work. It's going to be this massive thing where you have to do all sorts of stuff behind its back and do all these kinds of things. So you end up looking at a situation like this where you're thinking "wow, to get this extra thing that we needed to do to ship this game, we have to do a _massive_ amount of work to deal with this component."
 
-![vlcsnap-2019-09-25-19h14m41s722](images/vlcsnap-2019-09-25-19h14m41s722.png)
+![APIs can force large steps diagram: What we want is to take a small step in integration work that clears the minimum requirements bar, and a good API will allow that. But some APIs force you to take a large step to clear the bar, because there are no lower-effort options.](images/vlcsnap-2019-09-25-19h14m41s722.png)
 
 To summarize that, if the API has these little steps, and I want to meet this minimum bar of features that I've got to get for this next drop, to go from unsolved to solved, I just want to take a little step. I want to do whatever I feel is the minimum work that I should generally have to do to get this thing in there. But if there is no option for that, then they typically will have to jump all the way to something which, while you had to do a ton of work to get there, really solved a lot more problems than you were looking to solve. You ended up doing a lot more management or a lot more work with this component than you would have liked, and maybe there are fringe benefits to that, but a lot of times those benefits aren't really realized to you, you just wanted to manage one little piece of it for the component, for example, but now you ended up having to manage _all_ of its memory, let's say.
 
-![vlcsnap-2019-09-25-19h14m47s792](images/vlcsnap-2019-09-25-19h14m47s792.png)
+![Integration discontinuity diagram: There is an "Integration discontinuity" between integration State A and integration State B that clears the minimum requirements bar.](images/vlcsnap-2019-09-25-19h14m47s792.png)
 
 I call that an _Integration Discontinuity_, which where I'm going along using this component, and all of a sudden I hit this wall, and I'm like, "man, this is a disaster." And unfortunately, they typically happen around ship time, just when it's most unfortunate to have such a thing happen.
 
-![vlcsnap-2019-09-25-19h14m53s097](images/vlcsnap-2019-09-25-19h14m53s097.png)
+![Discontinuities waste work line graph: as time progresses between Initial, Major Demo, and First Beta, integration work always increases with sharp spikes before deadlines. During each of the spikes, the benefit to the game actually sharply decreases (loss in benefit) and spikily claws its way back to a greater benefit to the game than had previously been achieved](images/vlcsnap-2019-09-25-19h14m53s097.png)
 
 I guess this a little like beating a dead horse, but just to go through it: if you think about this yellow line as how much work you actually did to integrate the product--meaning, I'm actually doing this work, and I keep doing work, I do more work, and I do more work--when you have these discontinuities in there, what happens is, you're really doing _more work_ than the _benefit that you are getting_. So when I have to do more work than the minimum that I wanted to do to get this feature in, then the actual benefit to your app isn't going up commensurate with the work. You're _spending a lot of extra work_ to work _around this API_ that you're forced to deal with.
 And this doesn't even _have_ to be increasing, because what could happen is: if you're spending time integrating a component, you may find out that the way that you were integrating it isn't actually working, and you have to rip some of it out, redo the way you were doing it, throw out code you wrote to reintegrate it a different way. So you can actually end up going "okay, we got to tear some out, we tried this other method, and that didn't work, so then we tried going around to this other way, and we finally found an end-run that worked, and now we keep going and so on."
@@ -134,34 +134,34 @@ I guess all I'm trying to say with this graph is it's non-trivial when you have 
 The goal that we're trying to solve when we design reusable APIs is to think about this, and to try to make it so that, at all times-- as people integrate the product--they are always able to do only what they think they should have to do to get the next thing that they need out of the API, and not waste all of this time.
 Because really when they use code--I mean from a licensor perspective, that's what the customer ends up remembering: they don't remember if you saved them some work at some point, they remember when you caused them this _huge disaster_ right around ship time. And similarly, if you're the person doing that, you don't want that disaster, so this is really the thing that I think is most important.
 
-![vlcsnap-2019-09-25-19h15m06s995](images/vlcsnap-2019-09-25-19h15m06s995.png)
+![Current API design trends (1/6): We start with the Integration Options scatterplot from above, showing Integration Work relative to Benefit to Game. We have lots of options along both axes, with small integration work gaps between them.](images/vlcsnap-2019-09-25-19h15m06s995.png)
 
 Now unfortunately, with the current trends in API design, where you're kind of wrapping stuff up and doing a lot of encapsulation, doing a lot of insulation, what they actually do is they take the number of options that are available to the developer (which are these blue things as I said before) and they start to reduce them. They go "you know what, you can't 
 
-![vlcsnap-2019-09-25-19h15m45s781](images/vlcsnap-2019-09-25-19h15m45s781.png)
+![Current API design trends (2/6): Many of the integration options have now disappeared; the options are further apart.](images/vlcsnap-2019-09-25-19h15m45s781.png)
 
 
 really have access to these things, you can't
 
-![vlcsnap-2019-09-25-19h15m47s372](images/vlcsnap-2019-09-25-19h15m47s372.png)
+![Current API design trends (3/6): Most of the integration options have now disappeared; there's only three options, one with small work+benefit, one with large work+benefit, and one with huge work+benefit.](images/vlcsnap-2019-09-25-19h15m47s372.png)
 
 call these things that are calling these other things", and at some point sometimes you even get to the point where you look at an API and you're like "you know what, there's only one thing I can do with this:"
 
-![vlcsnap-2019-09-25-19h15m54s106](images/vlcsnap-2019-09-25-19h15m54s106.png)
+![Current API design trends (4/6): There's only one option left, the one with large (but not huge) work+benefit.](images/vlcsnap-2019-09-25-19h15m54s106.png)
 
 "They've totally walled me off, I have no options anymore, this is a disaster."
 
 These kinds of components typically fail, but a lot of times we're stuck with just this kind of thing:
 
-![vlcsnap-2019-09-25-19h16m02s787](images/vlcsnap-2019-09-25-19h16m02s787.png)
+![Current API design trends (5/6): We're back to seeing the three integration options from step 3.](images/vlcsnap-2019-09-25-19h16m02s787.png)
 
 where you look and there's a low level or high level you would use. And I argue that really, we want things to look like this: 
 
-![vlcsnap-2019-09-25-19h16m09s861](images/vlcsnap-2019-09-25-19h16m09s861.png)
+![Current API design trends (6/6): We're back to the many integration options from step 1.](images/vlcsnap-2019-09-25-19h16m09s861.png)
 
-And ideally fill in this gap that I was talking about before.
+And ideally fill in the gap that I was talking about before.
 
-![vlcsnap-2019-09-25-19h16m30s185](images/vlcsnap-2019-09-25-19h16m30s185.png)
+![Five Characteristics: Granularity (A or BC), Redundancy (A or B), Coupling (A implies B), Retention (A mirrors B), Flow Control (A invokes B)](images/vlcsnap-2019-09-25-19h16m30s185.png)
 
 That was very abstract, I drew a graph that had some blue points on it--that's all great, but how do I actually know, when I'm looking at an API:
 
@@ -183,7 +183,7 @@ The important thing to remember is these are just characteristics and each one o
 So it's not the case that some of them are _always_ bad. Sometimes it's good to have less granularity, sometimes more, don't think of them as hard-coded "we want all these five things".
 No, each one of them is just a characteristic and we'll talk about how to interpret them in a second.
 
-![vlcsnap-2019-09-25-19h16m54s112](images/vlcsnap-2019-09-25-19h16m54s112.png)
+![Granularity - A or BC: code snippets labeled A,B,C,D](images/vlcsnap-2019-09-25-19h16m54s112.png)
 
 Let's go through the kinds of granularity; some of them are non-obvious. 
 
@@ -199,7 +199,7 @@ The reason that I want that is because, hey, I may want to modify whatever is go
 
 And similarly, the less obvious version of that (D) is: I may not even want to change it, I may want this to happen exactly the same way that it would have if I just called it, but I have this other thing that I want to have happen, so instead of modifying things by inserting myself in the middle, really all I'm doing is I'm separating when the API is going to do those two things and that may not be that important in other industries. But in the game initially that's crucial, because sometimes you thread things, sometimes you have things that you need to hold over till the end of the frame, so you really don't want to be in positions where you don't have that kind of control, so that kind of granularity is also important.
 
-![vlcsnap-2019-09-25-19h16m59s248](images/vlcsnap-2019-09-25-19h16m59s248.png)
+![Redundancy - A or B: code snippets labeled A,B,C,D,E,F](images/vlcsnap-2019-09-25-19h16m59s248.png)
 
 Let's talk about redundancy (because hopefully granularity is pretty clear). Redundancy in its most basic form is something like this: I wanted to pass a 3x3 matrix before (A), and now I want to pass a Quaternion (B), so the API gives me two calls and I can enter in either way and it just accepts the type of parameter that I was looking for, it doesn't do anything different.
 
@@ -209,18 +209,18 @@ And similarly, oftentimes there are things that I would do with the orientation 
 
 Now the sort of subtle way of having redundancy is this kind here, where if you remember in the previous slide
 
-![vlcsnap-2019-09-25-19h17m14s407](images/vlcsnap-2019-09-25-19h17m14s407.png)
+![Granularity - A or BC: code snippets from before; we care about B](images/vlcsnap-2019-09-25-19h17m14s407.png)
 
 We had this operation (B) where we're getting the orientation, getting the change in the orientation, and then setting it.
 
-![vlcsnap-2019-09-25-19h17m17s861](images/vlcsnap-2019-09-25-19h17m17s861.png)
+![Redundancy - A or B: code snippets labeled A,B,C,D,E,F](images/vlcsnap-2019-09-25-19h17m17s861.png)
 
 Well if I was to go up a level of granularity from that, I could have the option of bundling those three calls in two different ways:
 
 I could bundle the first two calls and leave the third one at the the finer level of granularity (E), or I could bundle the second two calls (F) and leave this one at the finer level.
 So they're both kind of equivalent: these two snippets are at the same level of granularity, but they have different choices in redundancy in terms of: they have different choices in what to bundle, which makes a redundant API. That can typically be pretty useful--as you make coarser grained versions of an API--to have the user have the ability to choose which ones they're going to bundle and which ones they're not.
 
-![vlcsnap-2019-09-25-19h17m20s749](images/vlcsnap-2019-09-25-19h17m20s749.png)
+![Coupling - A implies B: code snippets labeled A,B,C,D,E,F,G](images/vlcsnap-2019-09-25-19h17m20s749.png)
 
 So now we get to coupling which is not really a trade-off thing; coupling is pretty much always bad, but it's usually also unavoidable in a lot of places. The simplest kind of coupling in an API (A) is when you have something that does things to lots of objects and you have no control over that. A very typical thing is `Simulate` in a physics simulator where I wanted some control over what was getting simulated because I have some special things that I want here, but maybe this API doesn't let me do that, so I have to have everything happen at once. Obviously that's bad coupling, that's inter-object coupling.
 
@@ -236,7 +236,7 @@ Snippet (E) is a more insidious form of coupling: it's when the allocation of so
 
 And the final kind of coupling (G) is when the API doesn't let you get away from depending on their file format, so in this case it's if the only way to get an object is to read that object with their file reading routine, I can't construct it myself with my own reading it in then I'm dependent on their file I/O routines and their data format, and there's nothing I can do about that really.
 
-![vlcsnap-2019-09-25-19h17m32s395](images/vlcsnap-2019-09-25-19h17m32s395.png)
+![Retention - A mirrors B: code snippets labeled A,B,D](images/vlcsnap-2019-09-25-19h17m32s395.png)
 
 Retention is pretty simple, so not many code snippets here.
 
@@ -248,7 +248,7 @@ In (B), we have: "I'm going to tell you that this object is parented to this oth
 
 And then finally in (D) we have the kind where you're retaining services from the application so the API is going: "when I open a file, I could call you back with some of these things." So it's going to retain the services that you provide it and use them whenever it would have used them in the middle of processing some of its various function calls.
 
-![vlcsnap-2019-09-25-19h17m38s433](images/vlcsnap-2019-09-25-19h17m38s433.png)
+![Flow Control - A invokes B: execution traces labeled A,B,C](images/vlcsnap-2019-09-25-19h17m38s433.png)
 
 Finally, we have flow control, and flow control is pretty easy to imagine. Pretend these are just stack traces and a measure of flow control is: "who is calling who?"
 
@@ -259,7 +259,7 @@ Or do we have a situation where the game, which was originally calling the libra
 Then we could get totally crazy and say a lot of times then, the game has to call the library for something, so we can keep \[at it?\] ad infinitum. If we allow this kind of flow control stuff to happen we can get these ridiculous stacks where I call the library, the library calls me back, I call the library, maybe it calls me back one more time.
 This is obviously a negative thing because the more this happens the more complex it is to visualize in your head what's going on in your relationship to this library. Furthermore, it can be really nasty where it has to call back one of your classes or you have to have `void*`s which tell it what the data is that you're going to need inside there because you no longer have your scope. There's a lot of complexity when you start to do some complicated kinds of flow control that aren't just (A).
 
-![vlcsnap-2019-09-25-19h17m49s687](images/vlcsnap-2019-09-25-19h17m49s687.png)
+![Flow Control - A invokes B: code snippets labeled A,B,C,D](images/vlcsnap-2019-09-25-19h17m49s687.png)
 
 And the code snippets for that are:
 
@@ -268,7 +268,7 @@ And the code snippets for that are:
 - (C) is just up here because it's the same as (B). If anyone thinks that (C) is not the same as (B), definitely rethink that because this is just a function pointer: a virtual function. There's a vtable somewhere so if you're inheriting from one of the API's classes, that's exactly the same thing as setting some file callbacks.
 - And then finally you could use exceptions (D) or something to transfer flow control, but hopefully that's not a big part of any licensable API.
 
-![vlcsnap-2019-09-25-19h18m05s247](images/vlcsnap-2019-09-25-19h18m05s247.png)
+![Recap: Granularity - A or BC (Flexibility vs simplicity), Redundancy - A or B (Convenience vs orthogonality), Coupling - A implies B (Less is always better), Rertention - A equals B (Synchronization vs automation), Flow Control - A invokes B (More game control is always better)](images/vlcsnap-2019-09-25-19h18m05s247.png)
 
 Here's the recap:
 
@@ -282,13 +282,13 @@ Retention is a synchronization versus automation thing where if I retain a lot o
 
 And finally flow control: again not much of a trade-off there, if you can get away with always having the game in control (and it calls the app and it returns to you) that's always simpler because you don't want to have to worry about these deep callback situations or how you get data down through through the library to you on the other side and so on.
 
-![vlcsnap-2019-09-25-19h18m22s090](images/vlcsnap-2019-09-25-19h18m22s090.png)
+![Tradeoff decisions often vary: at initial integration, Low granularity + High retention is ok. By First Beta, we might need High granularity + Low retention](images/vlcsnap-2019-09-25-19h18m22s090.png)
 
 The final thing that I want to mention about that is just that looking at all those trade-offs they're not necessarily constant throughout the course of the integration. When I first integrate a component into my game, I'm probably looking for very low granularity so I'm looking for even a very coarse-grained granularity approach and a lot of retention, because I just want to do something like load some characters off disk and animate them walking around and free them later. That's the level I'm looking for when I'm just in pre-production or doing my first integration into the game.
 
 But as I get to the end of the project I typically need the reverse. I need a lot of control so I fine-grain confine granularity in several places that I really need to manhandle, and I don't want a lot of retention because I've built all these data structures that say the way my game works and the less of that I have to mirror on the API side, the better. 
 
-![vlcsnap-2019-09-25-19h18m30s368](images/vlcsnap-2019-09-25-19h18m30s368.png)
+![The following examples are based on real-life stories of real game developers in dangerous development situations.](images/vlcsnap-2019-09-25-19h18m30s368.png)
 
 Now I'm going to look through actual code snippets that are not exactly the same as code snippets in a game but they're very very similar so we can look at what happens when some of these things are not at the proper level that they should be, just to give you a feel for:
 
@@ -296,11 +296,11 @@ Now I'm going to look through actual code snippets that are not exactly the same
 or
 - if you're evaluating an API, looking at what the consequences of that API are.
 
-![vlcsnap-2019-09-25-19h18m33s311](images/vlcsnap-2019-09-25-19h18m33s311.png)
+![Function names have been changed to protect the innocent/guilty.](images/vlcsnap-2019-09-25-19h18m33s311.png)
 
 Obviously I've changed this, so none of these are specifically somebody's API, they're just very representative of the standard ones that are out there.
 
-![vlcsnap-2019-09-25-19h18m37s946](images/vlcsnap-2019-09-25-19h18m37s946.png)
+![Game-provided services: code snippets labeled A,B,C](images/vlcsnap-2019-09-25-19h18m37s946.png)
 
 First thing let's look at game provided services.
 Here's a case (A) where I was calling this `ReadFile` thing in the API, and I was getting back whatever the thing is that it gives me back: some kind of object that I'm going to use.
@@ -319,7 +319,7 @@ The much more decoupled way that very very few APIs do, but some do, is to give 
 
 Is that the most decoupled we can get? It's not.
 
-![vlcsnap-2019-09-25-19h18m49s012](images/vlcsnap-2019-09-25-19h18m49s012.png)
+![Game-provided services: code snippets labeled C,D,E,F](images/vlcsnap-2019-09-25-19h18m49s012.png)
 
 You look at that and you go "well, this is still something that's owned by them. The thing that's coming back came back from the API, and I had no control of it." That's got to have some memory somewhere, something's going on here. At the very least let's pretend that the file data that it's interpreting is compressed in some way, so at the very least it's got to decompress it first before it can be used. What's happening inside this call is: the API is allocating a buffer or decompressing into it and then returning me a pointer to some part of that. I could decouple it further; I can go like this (D) which is to say that I want it to decompress this raw file data into file data, and then it can make the thing I can use for me, and then I can get rid of this file data, because I don't need it anymore.
 
@@ -335,7 +335,7 @@ So now everything is entirely within my purview here, and all its doing is trans
 
 We can still decouple it one further step. This is not necessary all the time, but for certain types of APIs it's crucial, and that is:
 
-![vlcsnap-2019-09-25-19h19m02s277](images/vlcsnap-2019-09-25-19h19m02s277.png)
+![Game-provided services: code snippets labeled F,G,H](images/vlcsnap-2019-09-25-19h19m02s277.png)
 
 (F) is the snippet that we had, but what we really might want to do is something more like (G), where we're saying: I don't even want you to require me to call one of your functions before I can use some of this data. I don't want however your packed data format works to influence that. I want to say "make one of these things and I'm gonna read it in however _I_ want to read it in." And that's important, because maybe I want to control exactly where that thing is placed with my own allocators, and read it directly in, and by the time we get to (H), we realize we didn't need the API at all for this process. It's a simple two line thing: if the data is transparent to us, we can just do this and have complete control, just as if was something in our game.
 
@@ -345,13 +345,13 @@ Again, I'm not trying to suggest that the difference between (A) and (H) is alwa
 
 (A) is good, and a lot of times the user will call that:
 
-![vlcsnap-2019-09-25-19h44m24s127](images/vlcsnap-2019-09-25-19h44m24s127.png)
+![Game-provided services: code snippets labeled A,B,C](images/vlcsnap-2019-09-25-19h44m24s127.png)
 
 but (H) is also good, and you don't want to be in a situation where the only thing you have is (A):
 
-![vlcsnap-2019-09-25-19h19m02s277](images/vlcsnap-2019-09-25-19h19m02s277.png)
+![Game-provided services: code snippets labeled F,G,H; we're only interested in H](images/vlcsnap-2019-09-25-19h19m02s277.png)
 
-![vlcsnap-2019-09-25-19h19m10s089](images/vlcsnap-2019-09-25-19h19m10s089.png)
+![Parameter redundancy: code snippets labeled A,B,C,D](images/vlcsnap-2019-09-25-19h19m10s089.png)
 
 Let's look at another common thing: *parameter redundancy*.
 
@@ -377,7 +377,7 @@ Really, what you want to do is get as close as possible to (D), which is where t
 
 In (D) we're saying if you've got a quaternion, you can pass that directly into us. We'll just take these two parameters, modify them, and pass them back out to you.
 
-![vlcsnap-2019-09-25-19h19m24s115](images/vlcsnap-2019-09-25-19h19m24s115.png)
+![Granularity transitions: code snippets labeled A,B](images/vlcsnap-2019-09-25-19h19m24s115.png)
 
 Let's look at the transition between a coarse grained operation and a fine grained one.
 
@@ -391,7 +391,7 @@ The update part did those three things; the render part did those five things.
 
 As you can see, as a developer I'm a little sad because I didn't really want to know all that render stuff. I didn't want to do any of that, but I had to do it all because I wanted to stop using that `Node` thing so I could get control over the update part. That's not very preferable, and if we look at that, what we really wanted to do is (C):
 
-![vlcsnap-2019-09-25-19h19m33s766](images/vlcsnap-2019-09-25-19h19m33s766.png)
+![Granularity transitions: code snippets labeled C,D](images/vlcsnap-2019-09-25-19h19m33s766.png)
 
 Have the exact same call that was there before, but now instead of using the bundled node type, I just pass the parts of the node type that I wanted.
 
@@ -399,7 +399,7 @@ This is a very easy thing for an API to do, but unfortunately almost none of the
 
 Similarly, I could look at a further kind of granularity option (D), which is if they did want a little bit of control over one of the processes, maybe I even offer another level of granularity in *between* those two. Not only do I allow you to go from node to non-node so I can break up these two things and not have to worry about this one; maybe I also allow you to do part of the render in the API now and pass in this additional part. So I take a little bit of the process away from you, but you still do the rest of it and don't have to worry about it.
 
-![vlcsnap-2019-09-25-19h19m38s844](images/vlcsnap-2019-09-25-19h19m38s844.png)
+![Retention mismatch: code snippets labeled A,B](images/vlcsnap-2019-09-25-19h19m38s844.png)
 
 Here's the final example we're going to look at, which is the typical retained-mode API problem that we get into when you don't provide some of the ability to do things immediately.
 
@@ -429,7 +429,7 @@ That is _really_ heinous, when you end up working on an app like this.
 
 I think probably most people in the audience have had to deal with this at some point if they've ever used a heavily retained-mode API.
 
-![vlcsnap-2019-09-25-19h19m47s402](images/vlcsnap-2019-09-25-19h19m47s402.png)
+![Retention mismatch: code snippets labeled B,C](images/vlcsnap-2019-09-25-19h19m47s402.png)
 
 What I'd _much rather_ do is turn this ugly snippet (B) that I don't like into snippet (C). I mean this is all I was trying to do!
 
@@ -462,7 +462,7 @@ So that's what I see as the way APIs look when you've really got this stuff dial
 
 Some of you may may not have wanted to spend a full 50 minutes talking about this stuff so right now I've summarized it all into just a minute's worth, so you can get it all _right now_. If you're designing an API or if you're about to evaluate an API, these couple slides should give you everything that you need to know. To cheat on the exam.
 
-![vlcsnap-2019-09-25-19h20m13s490](images/vlcsnap-2019-09-25-19h20m13s490.png)
+![API evaluation checklist (1/3) (described in the body text below)](images/vlcsnap-2019-09-25-19h20m13s490.png)
 
 - The first and second thing that you need to know (and this is kind of obvious but I just wanted to state it because most of this lecture is about the more detailed stuff) is: **always write the usage code first**.
 
@@ -472,7 +472,7 @@ Some of you may may not have wanted to spend a full 50 minutes talking about thi
 
 So now I get to the stuff that hopefully this lecture has argued is the right thing to do:
 
-![vlcsnap-2019-09-25-19h20m21s928](images/vlcsnap-2019-09-25-19h20m21s928.png)
+![API evaluation checklist (1/3) (described in the body text below)](images/vlcsnap-2019-09-25-19h20m21s928.png)
 
 - The first thing is that any kind of retained-mode contract this API puts forth, I should be able to do the exact same thing in immediate-mode by just calling a function with the things that the retained-mode structure had in it. And that was the thing about the `UpdateNode`, `RenderNode` thing. I should always be able to have the non-node version of those, so I can just call them immediately. What that does is that it allows you to transition from the retained-mode to a more finer controlled immediate-mode, when you need to. If you don't have those, then when you need to transition, you're gonna have to go: "oh my god! What was that node thing doing? I don't even know, I gotta go learn about that now, etc..."
 
@@ -484,7 +484,7 @@ So now I get to the stuff that hopefully this lecture has argued is the right th
 
 And the final four things:
 
- ![vlcsnap-2019-09-25-19h20m35s095](images/vlcsnap-2019-09-25-19h20m35s095.png)
+ ![API evaluation checklist (1/3) (described in the body text below)](images/vlcsnap-2019-09-25-19h20m35s095.png)
 
 - Any data which doesn't have a reason for being opaque should be transparent. If you just have data `struct`s that the API is using for things, those things should not be opaque. You always have the *choice* as a developer of not touching the data structures of the API. So if you're concerned about touching an internal structure or something like that, and having that break when the API gets updated, you can always decide not to do it. There's nothing forcing you to go look at some of the structures that the API defines. But when it comes down to ship time, you may find that you want that access to do some things in certain places in your app, and if they aren't exposed to you, then you've got this problem where you'd better hope the API has actual calls that do the sorts of stuff you need directly, or you're going to be in *big trouble*. So the idea is you should look through it, and while you shouldn't expect to use all of those things, you should try to make sure that they're there for when you *do* need them.
 
