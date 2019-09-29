@@ -1,7 +1,7 @@
 # Editor's Note
 Casey Muratori's 2004 lecture "Designing and Evaluating Reusable Components" is my favorite resource on API design. The content has (to my knowledge) only been available in the form of a 50 minute video lecture. Unfortunately, that format isn't accessible to some audiences.
 
-The following is my attempt at a manual transcript of the lecture, with minor edits to aid readability and some additional annotations to assist screen readers. Note that I sadly haven't yet had the chance to transcribe the code snippets, which may be a problem for some readers. 
+The following is my attempt at a manual transcript of the lecture, with minor edits to aid readability and some additional annotations to assist screen readers.
 
 You can learn more about the talk and its historical context on Casey's blog [here](https://caseymuratori.com/blog_0024). You can also find the 50 minute video version of the lecture there, if that is how you learn.
 
@@ -198,11 +198,23 @@ The important thing to remember is these are just characteristics and each one o
 So it's not the case that some of them are _always_ bad. Sometimes it's good to have less granularity, sometimes more, don't think of them as hard-coded "we want all these five things".
 No, each one of them is just a characteristic and we'll talk about how to interpret them in a second.
 
-![Granularity - A or BC: code snippets labeled A,B,C,D](images/vlcsnap-2019-09-25-19h16m54s112.png)
+![Granularity - A or BC: code snippets labeled A,B,C,D in the following body text](images/vlcsnap-2019-09-25-19h16m54s112.png)
 
 Let's go through the kinds of granularity; some of them are non-obvious. 
 
+```C++
+/* Granularity Snippet (A) */
+    UpdateOrientation(Object);
+```
+
 (A) The most obvious thing is if I have something like `UpdateOrientation`, and what this function is supposed to do is: the API has some measure of my orientation that it's keeping, and it's got some measure of the change in orientation, and I want to go ahead and apply that change so now when I use the orientation, it's the new orientation.
+
+```C++
+/* Granularity Snippet (B) */
+    Orientation = GetOrientation(Object);
+    Change = GetOrientationChange(Object);
+    SetOrientation(Object, Orientation + Change);
+```
 
 A simple granularity change (B) is okay, I want to break that down into steps:
 - I want to get the orientation myself,
@@ -210,78 +222,261 @@ A simple granularity change (B) is okay, I want to break that down into steps:
 - and then I want to set the thing with that change (and these are angles or something so that's no overloaded plus operator, it's just a regular 2d angle).
 
 That's the most \[simple?\] sign of granularity.
-The reason that I want that is because, hey, I may want to modify whatever is going to happen in there (C). I may not want it to just use it directly (the change that it has); I may want to play with it.
+The reason that I want that is because, hey, I may want to modify whatever is going to happen in there (C):
 
-And similarly, the less obvious version of that (D) is: I may not even want to change it, I may want this to happen exactly the same way that it would have if I just called it, but I have this other thing that I want to have happen, so instead of modifying things by inserting myself in the middle, really all I'm doing is I'm separating when the API is going to do those two things and that may not be that important in other industries. But in the game initially that's crucial, because sometimes you thread things, sometimes you have things that you need to hold over till the end of the frame, so you really don't want to be in positions where you don't have that kind of control, so that kind of granularity is also important.
+```C++
+/* Granularity Snippet (C) */
+    Orientation = GetOrientation(Object);
+    Change = GetOrientationChange(Object);
+    Change += 3.14f; // TODO: Close enough to Pi?
+    SetOrientation(Object, Orientation + Change);
+```
 
-![Redundancy - A or B: code snippets labeled A,B,C,D,E,F](images/vlcsnap-2019-09-25-19h16m59s248.png)
+I may not want it to just use it directly (the change that it has); I may want to play with it.
 
-Let's talk about redundancy (because hopefully granularity is pretty clear). Redundancy in its most basic form is something like this: I wanted to pass a 3x3 matrix before (A), and now I want to pass a Quaternion (B), so the API gives me two calls and I can enter in either way and it just accepts the type of parameter that I was looking for, it doesn't do anything different.
+And similarly, the less obvious version of that (D) is:
 
-(C) and (D) are a different way of looking at that, which is that hey, sometimes I figure that there should be these basic things that it can just do for me. I don't wanna have to make my own identity matrix and pass it, that sort of stuff. There's just constants that the API builds in that're easy for me to use and that way I just know it's taken care of.
+```C++
+/* Granularity Snippet (D) */
+    Orientation = GetOrientation(Object);
+    Change = GetOrientationChange(Object);
+    RunSomeOtherUnrelatedThing();
+    SetOrientation(Object, Orientation + Change);
+```
+
+I may not even want to change it, I may want this to happen exactly the same way that it would have if I just called it, but I have this other thing that I want to have happen, so instead of modifying things by inserting myself in the middle, really all I'm doing is I'm separating when the API is going to do those two things and that may not be that important in other industries. But in the game initially that's crucial, because sometimes you thread things, sometimes you have things that you need to hold over till the end of the frame, so you really don't want to be in positions where you don't have that kind of control, so that kind of granularity is also important.
+
+![Redundancy - A or B: code snippets labeled A,B,C,D,E,F in the following body text](images/vlcsnap-2019-09-25-19h16m59s248.png)
+
+Let's talk about redundancy (because hopefully granularity is pretty clear). Redundancy in its most basic form is something like this: I wanted to pass a 3x3 matrix before (A):
+
+```C++
+/* Redundancy Snippet (A) */
+    SetOrientation3x3(Object, Matrix);
+```
+
+and now I want to pass a Quaternion (B):
+
+```C++
+/* Redundancy Snippet (B) */
+    SetOrientationQ(Object, Quaternion);
+```
+
+So the API gives me two calls and I can enter in either way and it just accepts the type of parameter that I was looking for, it doesn't do anything different.
+
+(C) and (D):
+
+```C++
+/* Redundancy Snippet (C) */
+    IdentifyOrientation(Object);
+    FaceForwards(Object);
+```
+
+```C++
+/* Redundancy Snippet (D) */
+    OrientInDirection(Object, Vector);
+    OrientTorwards(Object, Point);
+```
+
+are a different way of looking at that, which is that hey, sometimes I figure that there should be these basic things that it can just do for me. I don't wanna have to make my own identity matrix and pass it, that sort of stuff. There's just constants that the API builds in that're easy for me to use and that way I just know it's taken care of.
 
 And similarly, oftentimes there are things that I would do with the orientation and I just want it to do those basic operations for me to set the orientation, and that's (D) so those are just some different redundant ways of doing that.
 
 Now the sort of subtle way of having redundancy is this kind here, where if you remember in the previous slide:
 
-![Granularity - A or BC: code snippets from before; we care about B](images/vlcsnap-2019-09-25-19h17m14s407.png)
+![Granularity - A or BC: code snippets from before; we care about B in the following body text](images/vlcsnap-2019-09-25-19h17m14s407.png)
+
+```C++
+/* Granularity Snippet (B) */
+    Orientation = GetOrientation(Object);
+    Change = GetOrientationChange(Object);
+    SetOrientation(Object, Orientation + Change);
+```
 
 We had this operation (B) where we're getting the orientation, getting the change in the orientation, and then setting it.
 
-![Redundancy - A or B: code snippets labeled A,B,C,D,E,F](images/vlcsnap-2019-09-25-19h17m17s861.png)
+![Redundancy - A or B: code snippets labeled A,B,C,D,E,F; we care about E and F in the following body text](images/vlcsnap-2019-09-25-19h17m17s861.png)
 
 Well if I was to go up a level of granularity from that, I could have the option of bundling those three calls in two different ways:
 
-I could bundle the first two calls and leave the third one at the the finer level of granularity (E), or I could bundle the second two calls (F) and leave this one at the finer level.
+I could bundle the first two calls and leave the third one at the the finer level of granularity (E):
+
+```C++
+/* Redundancy Snippet (E) */
+    NewOrient = GetOrientAndChange(Object);
+    SetOrientation(Object, NewOrient);
+```
+
+Or I could bundle the second two calls (F) and leave this one at the finer level:
+
+```C++
+/* Redundancy Snippet (F) */
+    Orient = GetOrientation(Object);
+    SetOrientDelta(Object, Orient, Change);
+```
+
 So they're both kind of equivalent: these two snippets are at the same level of granularity, but they have different choices in redundancy in terms of: they have different choices in what to bundle, which makes a redundant API. That can typically be pretty useful--as you make coarser grained versions of an API--to have the user have the ability to choose which ones they're going to bundle and which ones they're not.
 
-![Coupling - A implies B: code snippets labeled A,B,C,D,E,F,G](images/vlcsnap-2019-09-25-19h17m20s749.png)
+![Coupling - A implies B: code snippets labeled A,B,C,D,E,F,G in the following body text](images/vlcsnap-2019-09-25-19h17m20s749.png)
 
-So now we get to coupling which is not really a trade-off thing; coupling is pretty much always bad, but it's usually also unavoidable in a lot of places. The simplest kind of coupling in an API (A) is when you have something that does things to lots of objects and you have no control over that. A very typical thing is `Simulate` in a physics simulator where I wanted some control over what was getting simulated because I have some special things that I want here, but maybe this API doesn't let me do that, so I have to have everything happen at once. Obviously that's bad coupling, that's inter-object coupling.
+So now we get to coupling which is not really a trade-off thing; coupling is pretty much always bad, but it's usually also unavoidable in a lot of places. The simplest kind of coupling in an API (A) is when you have something that does things to lots of objects and you have no control over that:
 
-The other kind of coupling (B) is: hey, I've got some APIs which depend on this one state that I set. So maybe I call `SetTime` and it retains this time information, but then lots of different APIs use that, so I'm creating a hidden sort of coupling between those APIs in the sense that they all have to have this right ordering of: if I set the time and then call this, I can't then call the other thing which counted on the time being the thing from the previous frame so I have this hidden coupling that I have to think about in my head.
+```C++
+/* Coupling Snippet (A) */
+    UpdateEverything(Universe);
+```
+
+A very typical thing is `Simulate` in a physics simulator where I wanted some control over what was getting simulated because I have some special things that I want here, but maybe this API doesn't let me do that, so I have to have everything happen at once. Obviously that's bad coupling, that's inter-object coupling.
+
+The other kind of coupling (B) is: hey, I've got some APIs which depend on this one state that I set:
+
+```C++
+/* Coupling Snippet (B) */
+    SetTime(GlobalTime);
+    UpdateObject(Object);
+```
+
+So maybe I call `SetTime` and it retains this time information, but then lots of different APIs use that, so I'm creating a hidden sort of coupling between those APIs in the sense that they all have to have this right ordering of: if I set the time and then call this, I can't then call the other thing which counted on the time being the thing from the previous frame so I have this hidden coupling that I have to think about in my head.
+
+```C++
+/* Coupling Snippet (C) */
+    BeginObjectSpecification();
+    Object = EndObjectSpecification();
+```
 
 Snippet (C) is the kind of coupling you have in `glBegin` and `glEnd` for example, which is that there isn't any identification for a particular _lock_ that I'm doing, so I can only have one of them at any given time. I don't really get anything back from this and I don't pass anything into this, so there's really just this one implicit lock that either I am or I'm not using and that couples it in the sense that two pieces of code can't do that, and you have to make sure that all the code is always serially doing something like this.
 
+```C++
+/* Coupling Snippet (D) */
+    String1 = GetMungedName(Name1);
+    String2 = GetMungedName(Name2);
+```
+
 (D) is very simple, which is hey, if there are internal buffers, are those internal buffers going to be things that we have to pay attention to? So in this case if I was returning a `char*` for example, this is probably returning the same buffer as this, so I've got this hidden coupling where `String1` actually becomes the same thing as `String2` here. Hopefully that doesn't happen too much in modern APIs but I figured I'd mention it.
+
+```C++
+/* Coupling Snippet (E) */
+    Object = AllocateAndInitialize();
+```
 
 Snippet (E) is a more insidious form of coupling: it's when the allocation of something is coupled to its initialization, and a lot of APIs have this problem unfortunately. A lot of times, developers don't really want to have to be able to say "get me the memory for this thing and initialize it". They might want to say "I'm going to provide the memory and then could you just initialize it in place?" or "you're managing the memory but I need to initialize this guy because I'm reading it from this special stream that I have packed or whatever". So that's a kind of coupling where I bundle two things together that cannot ever be separated.
 
+```C++
+/* Coupling Snippet (F) */
+    Matrix = MakeMatrixFrom(FloatPointer);
+    SetOrientationM(Object, Matrix);
+```
+
 (F) is where I have coupling between some special type in the system. If I only accept a matrix for my orientation, if that's the only type that I accept here, then even if I have some representation of the matrix myself, I have to constantly make it with the API, I have to say: "hey, make one of your special fancy matrix objects so that I can actually call your functions".
+
+```C++
+/* Coupling Snippet (G) */
+    Object = ReadObject(Filename);
+```
 
 And the final kind of coupling (G) is when the API doesn't let you get away from depending on their file format, so in this case it's if the only way to get an object is to read that object with their file reading routine, I can't construct it myself with my own reading it in then I'm dependent on their file I/O routines and their data format, and there's nothing I can do about that really.
 
-![Retention - A mirrors B: code snippets labeled A,B,D](images/vlcsnap-2019-09-25-19h17m32s395.png)
+![Retention - A mirrors B: code snippets labeled A,B,D in the following body text; there is no snippet C](images/vlcsnap-2019-09-25-19h17m32s395.png)
 
 Retention is pretty simple, so not many code snippets here.
 
 The idea there is: if I have stuff that is data that I own or that I am the one who's in charge of but the API forces me to announce that data to it, and it keeps a copy, that's retention.
 
+```C++
+/* Retention Snippet (A) */
+    SetTime(GlobalTime);
+    SetPi(3.14f); // TODO: Close enough to Pi?
+```
+
 In (A) it's the simplest kind: I'm going to set the time or I'm going to set what I think the value of `Pi` should be for the application, then it just retains that information and is going to use it everywhere.
+
+```C++
+/* Retention Snippet (B) */
+    SetParent(ChildObject, ParentObject);
+    UpdateOrientation(ChildObject);
+```
 
 In (B), we have: "I'm going to tell you that this object is parented to this other object, so every time you do something like update the orientation, you're going to take that into consideration".
 
+```C++
+/* Retention Snippet (D) */
+    SetFileCallbacks(Open, Read, Close);
+    File = OpenFile(Filename);
+```
+
 And then finally in (D) we have the kind where you're retaining services from the application so the API is going: "when I open a file, I could call you back with some of these things." So it's going to retain the services that you provide it and use them whenever it would have used them in the middle of processing some of its various function calls.
 
-![Flow Control - A invokes B: execution traces labeled A,B,C](images/vlcsnap-2019-09-25-19h17m38s433.png)
+![Flow Control - A invokes B: execution traces labeled A,B,C in the following body text](images/vlcsnap-2019-09-25-19h17m38s433.png)
 
 Finally, we have flow control, and flow control is pretty easy to imagine. Pretend these are just stack traces and a measure of flow control is: "who is calling who?"
 
-Is it the case that the game is on the bottom of the stack, then it calls into the library and that's always the way it looks; that's all we get, so library on top game on bottom?
+```
+/* Flow Control Stack Trace (A) */
+=> LibTestNoodleWidgetHit
+   LibProcessNoodleWidget
+   GameProcessWidgets
+   GameUpdate
+```
 
-Or do we have a situation where the game, which was originally calling the library, now gets called back and there's sort of library in between, game on either side of the stack.
+Is it the case that the game is on the bottom of the stack (A), then it calls into the library and that's always the way it looks; that's all we get, so library on top game on bottom?
 
-Then we could get totally crazy and say a lot of times then, the game has to call the library for something, so we can keep \[at it?\] ad infinitum. If we allow this kind of flow control stuff to happen we can get these ridiculous stacks where I call the library, the library calls me back, I call the library, maybe it calls me back one more time.
+```
+/* Flow Control Stack Trace (B) */
+=> GameHandleNoodleWidgetHit
+   LibTestNoodleWidgetHit
+   LibProcessNoodleWidget
+   GameProcessWidgets
+   GameUpdate
+```
+
+Or do we have a situation (B) where the game, which was originally calling the library, now gets called back and there's sort of library in between, game on either side of the stack.
+
+```
+/* Flow Control Stack Trace (C) */
+=> LibNoodleWidgetChangeHeight
+   GameHandleNoodleWidgetHit
+   LibTestNoodleWidgetHit
+   LibProcessNoodleWidget
+   GameProcessWidgets
+   GameUpdate
+```
+
+Then we could get totally crazy (C) and say a lot of times then, the game has to call the library for something, so we can keep \[at it?\] ad infinitum. If we allow this kind of flow control stuff to happen we can get these ridiculous stacks where I call the library, the library calls me back, I call the library, maybe it calls me back one more time.
 This is obviously a negative thing because the more this happens the more complex it is to visualize in your head what's going on in your relationship to this library. Furthermore, it can be really nasty where it has to call back one of your classes or you have to have `void*`s which tell it what the data is that you're going to need inside there because you no longer have your scope. There's a lot of complexity when you start to do some complicated kinds of flow control that aren't just (A).
 
 ![Flow Control - A invokes B: code snippets labeled A,B,C,D](images/vlcsnap-2019-09-25-19h17m49s687.png)
 
 And the code snippets for that are:
 
-- (A) This is the most basic kind like we said before; I just call a function and it returns something, everyone's happy.
-- (B) is the slightly more complicated version where it's going to call me back, so I do open file and I get a callback for it.
-- (C) is just up here because it's the same as (B). If anyone thinks that (C) is not the same as (B), definitely rethink that because this is just a function pointer: a virtual function. There's a vtable somewhere so if you're inheriting from one of the API's classes, that's exactly the same thing as setting some file callbacks.
-- And then finally you could use exceptions (D) or something to transfer flow control, but hopefully that's not a big part of any licensable API.
+- (A)
+  ```C++
+  /* Flow Control Snippet (A) */
+      File = OpenFile(Filename);
+  ```
+  This is the most basic kind like we said before; I just call a function and it returns something, everyone's happy.
+- 
+  ```C++
+  /* Flow Control Snippet (B) */
+      SetFileCallbacks(Open, Read, Close);
+      File = OpenFile(Filename);
+  ```
+  (B) is the slightly more complicated version where it's going to call me back, so I do open file and I get a callback for it.
+- 
+  ```C++
+  /* Flow Control Snippet (C) */
+      class my_handle : public file_handle
+      {
+      public:
+      virtual void Open(char *Filename);
+      };
+  ```
+  (C) is just up here because it's the same as (B). If anyone thinks that (C) is not the same as (B), definitely rethink that because this is just a function pointer: a virtual function. There's a vtable somewhere so if you're inheriting from one of the API's classes, that's exactly the same thing as setting some file callbacks.
+- 
+  ```C++
+  /* Flow Control Snippet (D) */
+      throw 3.14f; // TODO: stop using exceptions
+  ```
+  And then finally you could use exceptions (D) or something to transfer flow control, but hopefully that's not a big part of any licensable API.
 
 ![Recap: Granularity - A or BC (Flexibility vs simplicity), Redundancy - A or B (Convenience vs orthogonality), Coupling - A implies B (Less is always better), Rertention - A equals B (Synchronization vs automation), Flow Control - A invokes B (More game control is always better)](images/vlcsnap-2019-09-25-19h18m05s247.png)
 
@@ -315,14 +510,28 @@ or
 
 Obviously I've changed this, so none of these are specifically somebody's API, they're just very representative of the standard ones that are out there.
 
-![Game-provided services: code snippets labeled A,B,C](images/vlcsnap-2019-09-25-19h18m37s946.png)
+![Game-provided services: code snippets labeled A,B,C in the following body text](images/vlcsnap-2019-09-25-19h18m37s946.png)
 
 First thing let's look at game provided services.
+
+```C++
+/* Game-provided services Snippet (A) */
+    Thing = ReadFile(Filename);
+```
+
 Here's a case (A) where I was calling this `ReadFile` thing in the API, and I was getting back whatever the thing is that it gives me back: some kind of object that I'm going to use.
 
 I want to stop it from from touching the disk; I'm going to manage that because I'm reading from my own database format or something like that.
 
-What most APIs do--assuming they provide this at all, which hopefully they do--is we get something like snippet (B): I set some file callbacks, which is basically just me saying I'm providing `fopen`, `fread`, and so on, so just call me when you would have called those.
+What most APIs do--assuming they provide this at all, which hopefully they do--is we get something like snippet (B):
+
+```C++
+/* Game-provided services Snippet (B) */
+    SetFileCallbacks(Open, Read, Close);
+    Thing = ReadFile(Filename);
+```
+
+I set some file callbacks, which is basically just me saying I'm providing `fopen`, `fread`, and so on, so just call me when you would have called those.
 
 Not only is it a problem for flow control because hey, now I'm getting called back by the API, but it's also a problem for coupling, in a non-obvious way. And the reason that there's coupling here is because you've _bundled_ the concept of reading the file _with_ interpreting it into this object that you can use. So I've actually smacked two separate things together, one of which is loading and interpreting an actual chunk of data off the disk, and the other is interpreting it.
 
@@ -334,13 +543,42 @@ The much more decoupled way that very very few APIs do, but some do, is to give 
 
 Is that the most decoupled we can get? It's not.
 
-![Game-provided services: code snippets labeled C,D,E,F](images/vlcsnap-2019-09-25-19h18m49s012.png)
+![Game-provided services: code snippets labeled C,D,E,F in the following body text](images/vlcsnap-2019-09-25-19h18m49s012.png)
 
-You look at (C) and you go "well, this is still something that's owned by them. The thing that's coming back came back from the API, and I had no control of it." That's got to have some memory somewhere, something's going on here. At the very least let's pretend that the file data that it's interpreting is compressed in some way, so at the very least it's got to decompress it first before it can be used. What's happening inside this call is: the API is allocating a buffer or decompressing into it and then returning me a pointer to some part of that. I could decouple it further; I can go like this (D) which is to say that I want it to decompress this raw file data into file data, and then it can make the thing I can use for me, and then I can get rid of this file data, because I don't need it anymore.
+```C++
+/* Game-provided services Snippet (C) */
+    Thing = MakeThingFromData(FileData);
+```
+
+You look at (C) and you go "well, this is still something that's owned by them. The thing that's coming back came back from the API, and I had no control of it." That's got to have some memory somewhere, something's going on here. At the very least let's pretend that the file data that it's interpreting is compressed in some way, so at the very least it's got to decompress it first before it can be used. What's happening inside this call is: the API is allocating a buffer or decompressing into it and then returning me a pointer to some part of that.
+
+```C++
+/* Game-provided services Snippet (D) */
+    FileData = DecompressFile(RawFileData);
+    Thing = MakeThingFromData(FileData);
+    FreeFileData(FileData);
+```
+
+I could decouple it further; I can go like this (D) which is to say that I want it to decompress this raw file data into file data, and then it can make the thing I can use for me, and then I can get rid of this file data, because I don't need it anymore.
+
+```C++
+/* Game-provided services Snippet (E) */
+    SetMemoryCallbacks(Allocate, Deallocate);
+    FileData = DecompressFile(RawFileData);
+    Thing = MakeThingFromData(FileData);
+```
 
 But the problem with that is it's still allocating memory, so I get right back to where I was before, where I have to then give it yet more callbacks (E). I was trying to eliminate them before but now I'm right back to it, so I have to let it allocate the memory for me.
 
-Finally, we get to F, which is the more properly decoupled version, which is to say that now I've got a four line version of what was a one-line thing before, but now I have complete control:
+```C++
+/* Game-provided services Snippet (F) */
+    Size = GetProcessedSize(RawFileData);
+    FileData = malloc(Size);
+    DecompressFile(RawFileData);
+    Thing = MakeThingFromData(FileData);
+```
+
+Finally, we get to (F), which is the more properly decoupled version, which is to say that now I've got a four line version of what was a one-line thing before, but now I have complete control:
 
 - I get the size that I *will need* for this thing.
 - I `malloc` that or `new` it, or call my own special allocator or do whatever I want.
@@ -350,9 +588,33 @@ So now everything is entirely within my purview here, and all its doing is trans
 
 We can still decouple it one further step. This is not necessary all the time, but for certain types of APIs it's crucial, and that is:
 
-![Game-provided services: code snippets labeled F,G,H](images/vlcsnap-2019-09-25-19h19m02s277.png)
+![Game-provided services: code snippets labeled F,G,H ](images/vlcsnap-2019-09-25-19h19m02s277.png)
 
-(F) is the snippet that we had, but what we really might want to do is something more like (G), where we're saying: I don't even want you to require me to call one of your functions before I can use some of this data. I don't want however your packed data format works to influence that. I want to say "make one of these things and I'm gonna read it in however _I_ want to read it in." And that's important, because maybe I want to control exactly where that thing is placed with my own allocators, and read it directly in, and by the time we get to (H), we realize we didn't need the API at all for this process. It's a simple two line thing: if the data is transparent to us, we can just do this and have complete control, just as if was something in our game.
+```C++
+/* Game-provided services Snippet (F) */
+    Size = GetProcessedSize(RawFileData);
+    FileData = malloc(Size);
+    DecompressFile(RawFileData);
+    Thing = MakeThingFromData(FileData);
+```
+
+(F) is the snippet that we had, but what we really might want to do is something more like (G):
+
+```C++
+/* Game-provided services Snippet (G) */
+    Thing = NewThing();
+    Read(File, sizeof(Thing), &Thing);
+```
+
+Here we're saying: I don't even want you to require me to call one of your functions before I can use some of this data. I don't want however your packed data format works to influence that. I want to say "make one of these things and I'm gonna read it in however _I_ want to read it in." And that's important, because maybe I want to control exactly where that thing is placed with my own allocators, and read it directly in, and by the time we get to (H):
+
+```C++
+/* Game-provided services Snippet (H) */
+    Thing = AllocateInAGP(sizeof(Thing));
+    Read(File, sizeof(Thing), &Thing);
+```
+
+We realize we didn't need the API at all for this process. It's a simple two line thing: if the data is transparent to us, we can just do this and have complete control, just as if was something in our game.
 
 Notice we haven't really affected the way the API functions at all. All the rest of the API can still work exactly the same way, but now we've removed it entirely from this process.
 
@@ -360,23 +622,55 @@ Again, I'm not trying to suggest that the difference between (A) and (H) is alwa
 
 (A) is good, and a lot of times the user will call that:
 
-![Game-provided services: code snippets labeled A,B,C](images/vlcsnap-2019-09-25-19h44m24s127.png)
+```C++
+/* Game-provided services Snippet (A) */
+    Thing = ReadFile(Filename);
+```
 
 but (H) is also good, and you don't want to be in a situation where the only thing you have is (A):
 
-![Game-provided services: code snippets labeled F,G,H; we're only interested in H](images/vlcsnap-2019-09-25-19h19m02s277.png)
+```C++
+/* Game-provided services Snippet (H) */
+    Thing = AllocateInAGP(sizeof(Thing));
+    Read(File, sizeof(Thing), &Thing);
+```
 
-![Parameter redundancy: code snippets labeled A,B,C,D](images/vlcsnap-2019-09-25-19h19m10s089.png)
+![Parameter redundancy: code snippets labeled A,B,C,D in the following body text](images/vlcsnap-2019-09-25-19h19m10s089.png)
 
 Let's look at another common thing: *parameter redundancy*.
 
 Parameter redundancy, like I said before, is the ability to call something in two different flavors, or multiple flavors, and so on.
 
+```C++
+/* Parameter redundancy Snippet (A) */
+    Inverse = InverseTransform(Xform);
+```
+
 In (A) I have the original version of the API's function, which inverts some transform, and let's pretend that the transform we're passing and the inverse we get back are both in the API's data type. That's their object or whatever it is.
 
-The problem is when we start realizing that we have our own transform type, and we've got to pass that in, and we end up with with something like (B) where I have a floating point vector of position and a floating point vector that's the rotation, and now I've got to call the API to bundle it up into one of their things, and then, when I'm done with their function, I've got to call `CopyTransform` to get it out again, into my format.
+The problem is when we start realizing that we have our own transform type, and we've got to pass that in, and we end up with with something like (B):
 
-That can get really heinous if _my version_ (the object type that I'm using for a transform) also has this process that has to happen. Then I've got to (C)
+```C++
+/* Parameter redundancy Snippet (B) */
+    Xform = TransformFrom(Position, Rotation);
+    Inverse = InverseTransform(Xform);
+    CopyTransform(Inverse, Position, Rotation);
+```
+
+Where I have a floating point vector of position and a floating point vector that's the rotation, and now I've got to call the API to bundle it up into one of their things, and then, when I'm done with their function, I've got to call `CopyTransform` to get it out again, into my format.
+
+```C++
+/* Parameter redundancy Snippet (C) */
+    GetPosition(GameXform, Position);
+    GetRotation(GameXform, Rotation);
+    Xform = TransformFrom(Position, Rotation);
+    Inverse = InverseTransform(Xform);
+    CopyTransform(Xform, Position, Rotation);
+    SetPosition(GameXform, Position);
+    SetRotation(GameXform, Rotation);
+```
+
+That can get really heinous if _my version_ (the object type that I'm using for a transform) also has this process that has to happen. Then I've got to (C):
 
 - get it out of mine
 - put it into theirs
@@ -390,37 +684,102 @@ It seems like a contrived example, but at the same time, I see this _all the tim
 
 Really, what you want to do is get as close as possible to (D), which is where the API has several versions of this function because it _knows_ that everyone has their own format for position and orientation, so let's try to provide as many of them as we can, to reduce the chances that they _have_ to do this ridiculous dance.
 
+```C++
+/* Parameter redundancy Snippet (D) */
+    InverseTransformQ(Position, Rotation,
+    Position, Rotation);
+```
+
 In (D) we're saying if you've got a quaternion, you can pass that directly into us. We'll just take these two parameters, modify them, and pass them back out to you.
 
-![Granularity transitions: code snippets labeled A,B](images/vlcsnap-2019-09-25-19h19m24s115.png)
+![Granularity transitions: code snippets labeled A,B in the following body text](images/vlcsnap-2019-09-25-19h19m24s115.png)
 
 Let's look at the transition between a coarse grained operation and a fine grained one.
 
-In code snippet (A), I've got a retained mode thing going on where the app has some kind of object called a `Node` which has some stuff in it, and I'm asking it to update it, and then I'm asking it to render it. Two operations on the node.
+In code snippet (A):
+
+```C++
+/* Granularity transitions Snippet (A) */
+    UpdateNode(Node); // <-
+    RenderNode(Node);
+```
+
+I've got a retained mode thing going on where the app has some kind of object called a `Node` which has some stuff in it, and I'm asking it to update it, and then I'm asking it to render it. Two operations on the node.
 
 I've highlighted the first one because maybe all I really want to do is change the way _that_ operation works. The rendering is great, all the rendering is happy, but the updating is not doing the things that I want.
 
-In code snippet (B), I've expanded it out. And since I'm not using the node structure anymore, as a developer I now have to duplicate all of the stuff that that thing did, (and I'm just making up some stuff that it did here).
+In code snippet (B):
+
+```C++
+/* Granularity transitions Snippet (B) */
+    // Update
+    Rotate(XForm, t * RadiansPerSecond);
+    Translate(XForm, t * MetersPerSecond);
+    WorldMesh = BuildWorldState(Mesh, ParentMesh);
+
+    // Render
+    MaterialSort = NewMaterialSort();
+    Sort(MaterialSort, WorldMesh);
+    RenderOpaque(WorldMesh, XForm, MaterialSort);
+    RenderAlpha(WorldMesh, XForm, MaterialSort);
+    ReleaseMaterialSort(MaterialSort);
+```
+
+I've expanded it out. And since I'm not using the node structure anymore, as a developer I now have to duplicate all of the stuff that that thing did, (and I'm just making up some stuff that it did here).
 
 The update part did those three things; the render part did those five things.
 
 As you can see, as a developer I'm a little sad because I didn't really want to know all that render stuff. I didn't want to do any of that, but I had to do it all because I wanted to stop using that `Node` thing so I could get control over the update part. That's not very preferable, and if we look at that, what we really wanted to do is (C):
 
-![Granularity transitions: code snippets labeled C,D](images/vlcsnap-2019-09-25-19h19m33s766.png)
+```C++
+/* Granularity transitions Snippet (C) */
+    // Update
+    Rotate(XForm, t * RadiansPerSecond);
+    Translate(XForm, t * MetersPerSecond);
+    WorldMesh = BuildWorldState(Mesh, ParentMesh);
 
-Have the exact same call that was there before, but now instead of using the bundled node type, I just pass the parts of the node type that I wanted.
+    // Render
+    Render(WorldMesh, XForm);
+```
+
+![Granularity transitions: code snippets labeled C,D in the surrounding body text](images/vlcsnap-2019-09-25-19h19m33s766.png)
+
+...have the exact same call that was there before, but now instead of using the bundled node type, I just pass the parts of the node type that I wanted.
 
 This is a very easy thing for an API to do, but unfortunately almost none of them actually seem to do it. A lot of times when they have these kind of bundled constructs, they don't actually provide the _exact_ same function in an unbundled way, which is really unfortunate.
 
-Similarly, I could look at a further kind of granularity option (D), which is if they did want a little bit of control over one of the processes, maybe I even offer another level of granularity in *between* those two. Not only do I allow you to go from node to non-node so I can break up these two things and not have to worry about this one; maybe I also allow you to do part of the render in the API now and pass in this additional part. So I take a little bit of the process away from you, but you still do the rest of it and don't have to worry about it.
+Similarly, I could look at a further kind of granularity option (D):
 
-![Retention mismatch: code snippets labeled A,B](images/vlcsnap-2019-09-25-19h19m38s844.png)
+```C++
+/* Granularity transitions Snippet (D) */
+    // Update
+    Rotate(XForm, t * RadiansPerSecond);
+    Translate(XForm, t * MetersPerSecond);
+    WorldMesh = BuildWorldState(Mesh, ParentMesh);
+
+    // Render
+    MaterialSort = NewMaterialSort();
+    RenderSorted(WorldMesh, XForm, MaterialSort);
+    ReleaseMaterialSort(MaterialSort);
+```
+
+Which is if they did want a little bit of control over one of the processes, maybe I even offer another level of granularity in *between* those two. Not only do I allow you to go from node to non-node so I can break up these two things and not have to worry about this one; maybe I also allow you to do part of the render in the API now and pass in this additional part. So I take a little bit of the process away from you, but you still do the rest of it and don't have to worry about it.
+
+![Retention mismatch: code snippets labeled A,B in the following body text](images/vlcsnap-2019-09-25-19h19m38s844.png)
 
 Here's the final example we're going to look at, which is the typical retained-mode API problem that we get into when you don't provide some of the ability to do things immediately.
 
 I've used the physics engine here because it's known for being very retained-mode heavy.
 
 Snippet (A) is what you would typically see in a physics API:
+
+```C++
+/* Retention mismatch Snippet (A) */
+    Rocket = CreateRigidBody();
+    Pole = CreateRigidBody();
+    Hookline = CreateJoint(Rocket, Pole);
+    Simulate();
+```
 
 - I'm going to create this `Rocket`
 - and this `Pole` that's stuck in the ground,
@@ -432,7 +791,24 @@ But unfortunately that's not really very representative of what happens in game 
 
 I've got something that's some sampled thing that's very fine-grained, like "is the user pressing the X-button?"
 
-What I have to do if this is what my API looks like is:
+What I have to do if this is what my API looks like is (B):
+
+```C++
+/* Retention mismatch Snippet (B) */
+    if(XButtonDown)
+    {
+        if(!Hookline)
+        {
+            Hookline = CreateJoint(Rocket, Pole);
+        }
+    }
+    else if(Hookline)
+    {
+        DeleteJoint(Hookline);
+        Hookline = 0;
+    }
+    Simulate();
+```
 
 - if they're pushing the X-button, then if I don't already have one of these `Hookline`s in there, I've got to make one,
 -  and if I had one and they weren't pushing the button, then I've got to delete it and remember that I deleted it.
@@ -444,9 +820,36 @@ That is _really_ heinous, when you end up working on an app like this.
 
 I think probably most people in the audience have had to deal with this at some point if they've ever used a heavily retained-mode API.
 
-![Retention mismatch: code snippets labeled B,C](images/vlcsnap-2019-09-25-19h19m47s402.png)
+![Retention mismatch: code snippets labeled B,C in the following body text](images/vlcsnap-2019-09-25-19h19m47s402.png)
 
-What I'd _much rather_ do is turn this ugly snippet (B) that I don't like into snippet (C). I mean this is all I was trying to do!
+What I'd _much rather_ do is turn this ugly snippet (B) that I don't like:
+
+```C++
+/* Retention mismatch Snippet (B) */
+    if(XButtonDown)
+    {
+        if(!Hookline)
+        {
+            Hookline = CreateJoint(Rocket, Pole);
+        }
+    }
+    else if(Hookline)
+    {
+        DeleteJoint(Hookline);
+        Hookline = 0;
+    }
+    Simulate();
+```
+
+into snippet (C):
+
+```C++
+/* Retention mismatch Snippet (C) */
+    if(XButtonDown) DoJoint(Rocket, Pole);
+    Simulate();
+```
+
+I mean this is all I was trying to do!
 
 All I'm trying to do is say
 
