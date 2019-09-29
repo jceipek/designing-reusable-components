@@ -467,7 +467,7 @@ And the code snippets for that are:
       class my_handle : public file_handle
       {
       public:
-      virtual void Open(char *Filename);
+        virtual void Open(char *Filename);
       };
   ```
   (C) is just up here because it's the same as (B). If anyone thinks that (C) is not the same as (B), definitely rethink that because this is just a function pointer: a virtual function. There's a vtable somewhere so if you're inheriting from one of the API's classes, that's exactly the same thing as setting some file callbacks.
