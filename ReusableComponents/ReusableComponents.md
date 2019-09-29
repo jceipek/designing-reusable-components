@@ -19,7 +19,7 @@ Code reuse is something that, in general, everyone wants to be able to do. Eithe
 
 So it's no surprise that there's lots of books on it, there's lots of people who speak on the topic, and that sort of thing.
 But, in general, what seems to typically be the case is that a lot of the things that you hear about this or think you know about this, when you actually try to put them into practice, it turns out that they don't really work that well.
-And you kind of sit there scratching your head going "we *thought* we were doing some of this code reuse stuff well, or we we thought this component that we looked at to license had a good API, but when we actually tried to use it in our game, we start to feel like getting a little more NIH (Not Invented Here) about the problem, because God, it just didn't work out that well, it caused all sorts of problems and so on."
+And you kind of sit there scratching your head going "we *thought* we were doing some of this code reuse stuff well, or we thought this component that we looked at to license had a good API, but when we actually tried to use it in our game, we start to feel like getting a little more NIH (Not Invented Here) about the problem, because God, it just didn't work out that well, it caused all sorts of problems and so on."
 
 Where this lecture kind of comes from is:
 I worked at RAD game tools and I was responsible for doing Granny, which is RAD's character animation package. And at the outset of that, I made the first version of it according to what I thought were standard reusable code principles, and it turned out to just not really work very well.
@@ -34,17 +34,15 @@ So with this lecture I kind of tried to go back and go "okay what were all the t
 So before I get into it I wanted to quickly go over the types of reuse that we typically see.
 
 1. The first kind here on the left is what I call _"Layer"_ which is the OpenGL or Direct3D kind of a thing where you've got
-A) new code that you're writing on top, which is your game or something,
-B) you've got reused code, which is the Layer which is the Direct3D part or whatever the API is that's provided to abstract
-C) some service that's down at the bottom, which is like the 3d
-hardware or something like this.
+- new code that you're writing on top, which is your game or something,
+- you've got reused code, which is the Layer which is the Direct3D part or whatever the API is that's provided to abstract
+- some service that's down at the bottom, which is like the 3d hardware or something like this.
 This kind of reuse is pretty common now, and it seems to be working relatively well (although there's still some problems within that sort of thing).
 
 2. The second kind is _"Engine"_ code where the situation is kind of inverted.
-A) The reused code is up at the top making all the decisions--it's the majority of the system--and you're just writing
-B) this smaller subset of that, conforming to its rules, giving it
-information back to define your game, and
-C) it's pretty much responsible for ending up dealing with all the output and that sort of thing.
+- The reused code is up at the top making all the decisions--it's the majority of the system--and you're just writing
+- this smaller subset of that, conforming to its rules, giving it information back to define your game, and
+- it's pretty much responsible for ending up dealing with all the output and that sort of thing.
 
 3. And then finally we have the third kind, which is kind of the new thing which hadn't been around really, in any successful way, up until very recently. These are _"Components"_, and those are things where it's still kind of like the layer situation where the new code is up at the top, and the game code is all in control, but there's these little pieces that you can license which not only accept input from you but actually give stuff back that actually determines how the game runs. They're tightly integrated, and these are things like character animation, physics, AI, that sort of thing. And they don't really talk to services directly; there's no well-defined output layer for them, they just give you stuff back and then you're responsible for kind of doing it.
 
