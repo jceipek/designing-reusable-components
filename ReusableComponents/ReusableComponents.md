@@ -35,8 +35,12 @@ So before I get into it I wanted to quickly go over the types of reuse that we t
 
 1. The first kind here on the left is what I call _"Layer"_ which is the OpenGL or Direct3D kind of a thing where you've got
 - new code that you're writing on top, which is your game or something,
-- you've got reused code, which is the Layer which is the Direct3D part or whatever the API is that's provided to abstract
+- you've got reused code, which is the Layer which is the Direct3D part or whatever the API is that's provided
+
+  to abstract
+
 - some service that's down at the bottom, which is like the 3d hardware or something like this.
+
 This kind of reuse is pretty common now, and it seems to be working relatively well (although there's still some problems within that sort of thing).
 
 2. The second kind is _"Engine"_ code where the situation is kind of inverted.
@@ -87,7 +91,7 @@ And what some people tend to gloss over, if you read books about this sort of th
 
 We don't one day decide to integrate physics into our game, spend a week on it, and then we're done, and that's the last we hear of it. *That's not what happens.*
 
-What really happens is: yes that that part of the process is over here somewhere--we do the initial integration and then it's in the game. But then in reality, usually as we go, we use a little bit more of it, and then we get to some point where we have some major push that we're trying to do.
+What really happens is: yes that part of the process is over here somewhere--we do the initial integration and then it's in the game. But then in reality, usually as we go, we use a little bit more of it, and then we get to some point where we have some major push that we're trying to do.
 And at that point, we typically have to start getting more involved with the API because there's things we need to do. For example we have memory budgets we need to hit, we need to add some features that we didn't think we were going to need (or that we put off integrating, and now we need them for this demo, we need them for whatever we're trying to ship).
 And we get kind of this little spike there, and similarly that typically happens again, at least once, at the end of the project. When we're trying to ship, there's all of these hard constraints that we have to meet. So it really is an _evolving usage_: it goes from initial, where we may even just be prototyping a game (so we're not even doing the official integration), all the way till we're trying to ship and nail down every little last piece.
 
@@ -131,7 +135,7 @@ To summarize that, if the API has these little steps, and I want to meet this mi
 
 ![Integration discontinuity diagram: There is an "Integration discontinuity" between integration State A and integration State B that clears the minimum requirements bar.](images/vlcsnap-2019-09-25-19h14m47s792.png)
 
-I call that an _Integration Discontinuity_, which where I'm going along using this component, and all of a sudden I hit this wall, and I'm like, "man, this is a disaster." And unfortunately, they typically happen around ship time, just when it's most unfortunate to have such a thing happen.
+I call that an _Integration Discontinuity_, which is where I'm going along using this component, and all of a sudden I hit this wall, and I'm like, "man, this is a disaster." And unfortunately, they typically happen around ship time, just when it's most unfortunate to have such a thing happen.
 
 ![Discontinuities waste work line graph: as time progresses between Initial, Major Demo, and First Beta, integration work always increases with sharp spikes before deadlines. During each of the spikes, the benefit to the game actually sharply decreases (loss in benefit) and spikily claws its way back to a greater benefit to the game than had previously been achieved](images/vlcsnap-2019-09-25-19h14m53s097.png)
 
@@ -198,7 +202,7 @@ No, each one of them is just a characteristic and we'll talk about how to interp
 
 Let's go through the kinds of granularity; some of them are non-obvious. 
 
-A) The most obvious thing is if I have something like `UpdateOrientation`, and what this function is supposed to do is: the API has some measure of my orientation that it's keeping, and it's got some measure of the change in orientation, and I want to go ahead and apply that change so now when I use the orientation, it's the new orientation.
+(A) The most obvious thing is if I have something like `UpdateOrientation`, and what this function is supposed to do is: the API has some measure of my orientation that it's keeping, and it's got some measure of the change in orientation, and I want to go ahead and apply that change so now when I use the orientation, it's the new orientation.
 
 A simple granularity change (B) is okay, I want to break that down into steps:
 - I want to get the orientation myself,
@@ -218,7 +222,7 @@ Let's talk about redundancy (because hopefully granularity is pretty clear). Red
 
 And similarly, oftentimes there are things that I would do with the orientation and I just want it to do those basic operations for me to set the orientation, and that's (D) so those are just some different redundant ways of doing that.
 
-Now the sort of subtle way of having redundancy is this kind here, where if you remember in the previous slide
+Now the sort of subtle way of having redundancy is this kind here, where if you remember in the previous slide:
 
 ![Granularity - A or BC: code snippets from before; we care about B](images/vlcsnap-2019-09-25-19h17m14s407.png)
 
@@ -263,7 +267,7 @@ And then finally in (D) we have the kind where you're retaining services from th
 
 Finally, we have flow control, and flow control is pretty easy to imagine. Pretend these are just stack traces and a measure of flow control is: "who is calling who?"
 
-Is it the case that the game is on the bottom of the stack, then it calls into the library and that's always the way it looks that's all we get so library on top game on bottom?
+Is it the case that the game is on the bottom of the stack, then it calls into the library and that's always the way it looks; that's all we get, so library on top game on bottom?
 
 Or do we have a situation where the game, which was originally calling the library, now gets called back and there's sort of library in between, game on either side of the stack.
 
@@ -285,27 +289,27 @@ Here's the recap:
 
 We have granularity and essentially what we do with that is we trade off flexibility for simplicity; the more coarser grain the granularity is, the simpler the API is to use because there's less calls, less things for the user to get wrong, etc... But we give up flexibility. As we go up there, we're at the point where they're really out of control: they don't have control, they're just telling you what to do and the API does it entirely the way that they want.
 
-With redundancy it's really a trade-off of convenience versus orthogonality. If your thing is very redundant, then you're going to be very convenient cuz there's tons of these APIs to choose from for every different thing to do, but you're not very orthogonal --it's a little harder for the user to keep in their head because there isn't just one way of doing the things they're going to do, there's lots of different ways.
+With redundancy it's really a trade-off of convenience versus orthogonality. If your thing is very redundant, then you're going to be very convenient cuz there's tons of these APIs to choose from for every different thing to do, but you're not very orthogonal--it's a little harder for the user to keep in their head because there isn't just one way of doing the things they're going to do, there's lots of different ways.
 
 With coupling, there really isn't much of a trade-off, we'd like the API to be as decoupled as possible because all it's doing is putting restrictions on what the programmer can and can't do: there's really no benefit to that one.
 
 Retention is a synchronization versus automation thing where if I retain a lot of data, then it's hard because the user has to synchronize all that stuff and that's bad. Immediate-mode things are better because there's no synchronization involved where they have to constantly keep you updated, but you may lose some automation there, because if you have all this retained data, then the API can maybe automate things for you that it couldn't otherwise.
 
-And finally flow control: again not much of a trade-off there, if you can get away with always having the game in control (and it calls the app and it returns to you) that's always simpler because you don't want to have to worry about these deep callback situations or how you get data down through through the library to you on the other side and so on.
+And finally flow control: again not much of a trade-off there, if you can get away with always having the game in control (and it calls the app and it returns to you) that's always simpler because you don't want to have to worry about these deep callback situations or how you get data down through the library to you on the other side and so on.
 
 ![Tradeoff decisions often vary: at initial integration, Low granularity + High retention is ok. By First Beta, we might need High granularity + Low retention](images/vlcsnap-2019-09-25-19h18m22s090.png)
 
 The final thing that I want to mention about that is just that looking at all those trade-offs they're not necessarily constant throughout the course of the integration. When I first integrate a component into my game, I'm probably looking for very low granularity so I'm looking for even a very coarse-grained granularity approach and a lot of retention, because I just want to do something like load some characters off disk and animate them walking around and free them later. That's the level I'm looking for when I'm just in pre-production or doing my first integration into the game.
 
-But as I get to the end of the project I typically need the reverse. I need a lot of control so I fine-grain confine granularity in several places that I really need to manhandle, and I don't want a lot of retention because I've built all these data structures that say the way my game works and the less of that I have to mirror on the API side, the better. 
+But as I get to the end of the project I typically need the reverse. I need a lot of control so I need fine-grained granularity in several places that I really need to manhandle, and I don't want a lot of retention because I've built all these data structures that say the way my game works and the less of that I have to mirror on the API side, the better. 
 
 ![The following examples are based on real-life stories of real game developers in dangerous development situations.](images/vlcsnap-2019-09-25-19h18m30s368.png)
 
 Now I'm going to look through actual code snippets that are not exactly the same as code snippets in a game but they're very very similar so we can look at what happens when some of these things are not at the proper level that they should be, just to give you a feel for:
 
-- if you're designing API, how you should be looking at it,
+- If you're designing an API, how you should be looking at it,
 or
-- if you're evaluating an API, looking at what the consequences of that API are.
+- If you're evaluating an API, looking at what the consequences of that API are.
 
 ![Function names have been changed to protect the innocent/guilty.](images/vlcsnap-2019-09-25-19h18m33s311.png)
 
@@ -332,7 +336,7 @@ Is that the most decoupled we can get? It's not.
 
 ![Game-provided services: code snippets labeled C,D,E,F](images/vlcsnap-2019-09-25-19h18m49s012.png)
 
-You look at that and you go "well, this is still something that's owned by them. The thing that's coming back came back from the API, and I had no control of it." That's got to have some memory somewhere, something's going on here. At the very least let's pretend that the file data that it's interpreting is compressed in some way, so at the very least it's got to decompress it first before it can be used. What's happening inside this call is: the API is allocating a buffer or decompressing into it and then returning me a pointer to some part of that. I could decouple it further; I can go like this (D) which is to say that I want it to decompress this raw file data into file data, and then it can make the thing I can use for me, and then I can get rid of this file data, because I don't need it anymore.
+You look at (C) and you go "well, this is still something that's owned by them. The thing that's coming back came back from the API, and I had no control of it." That's got to have some memory somewhere, something's going on here. At the very least let's pretend that the file data that it's interpreting is compressed in some way, so at the very least it's got to decompress it first before it can be used. What's happening inside this call is: the API is allocating a buffer or decompressing into it and then returning me a pointer to some part of that. I could decouple it further; I can go like this (D) which is to say that I want it to decompress this raw file data into file data, and then it can make the thing I can use for me, and then I can get rid of this file data, because I don't need it anymore.
 
 But the problem with that is it's still allocating memory, so I get right back to where I was before, where I have to then give it yet more callbacks (E). I was trying to eliminate them before but now I'm right back to it, so I have to let it allocate the memory for me.
 
@@ -424,7 +428,7 @@ Snippet (A) is what you would typically see in a physics API:
 - and I'm gonna constrain the rocket to the pole, so that as the rocket goes, it's circling around the pole,
 -  and then I call `Simulate` and it kind of just all magically works, and everyone's happy: my rocket is flying around; it's great!
 
-But what unfortunately that's not really very representative of what happens in game development. What typically happens is:
+But unfortunately that's not really very representative of what happens in game development. What typically happens is:
 
 I've got something that's some sampled thing that's very fine-grained, like "is the user pressing the X-button?"
 
@@ -456,7 +460,7 @@ I'd like to remind everyone here, because I can only show so much on a slide, is
 
 Hopefully, I've given you an idea of how those five characteristics work when you look at the code.
 
-What ends up happening, I think, with most APIs--not that there's that many that have tried to do all this stuff--but when you when you look at them--and I've talked some people who have actually done a bunch of this stuff and they
+What ends up happening, I think, with most APIs--not that there's that many that have tried to do all this stuff--but when you look at them--and I've talked with some people who have actually done a bunch of this stuff and they
 seem to concur with me--when you follow these, either by intuition or because you've sat down and actually looked at what they all are, the APIs that work the best for reuse across multiple projects that are very different from each other, wide reuse kinds of situations that people have a pleasant time with is:
 
 - When you optimize these five characteristics, you get an API which has gradual tiers to it. There's lots of different kinds of ways that I can access this API, and I can gradually move between them as I need to.
