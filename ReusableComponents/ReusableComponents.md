@@ -248,14 +248,14 @@ I may not even want to change it, I may want this to happen exactly the same way
 
 ![Redundancy - A or B: code snippets labeled A,B,C,D,E,F in the following body text](images/vlcsnap-2019-09-25-19h16m59s248.png)
 
-Let's talk about redundancy (because hopefully granularity is pretty clear). Redundancy in its most basic form is something like this: I wanted to pass a 3x3 matrix before (A):
+Let's talk about redundancy (because hopefully granularity is pretty clear). Redundancy in its most basic form is something like this: (A) I wanted to pass a 3x3 matrix before:
 
 ```C++
 /* Redundancy Snippet (A) */
     SetOrientation3x3(Object, Matrix);
 ```
 
-and now I want to pass a Quaternion (B):
+and now (B) I want to pass a Quaternion:
 
 ```C++
 /* Redundancy Snippet (B) */
@@ -282,9 +282,7 @@ are a different way of looking at that, which is that hey, sometimes I figure th
 
 And similarly, oftentimes there are things that I would do with the orientation and I just want it to do those basic operations for me to set the orientation, and that's (D) so those are just some different redundant ways of doing that.
 
-Now the sort of subtle way of having redundancy is this kind here, where if you remember in the previous slide:
-
-![Granularity - A or BC: code snippets from before; we care about B in the following body text](images/vlcsnap-2019-09-25-19h17m14s407.png)
+Now the sort of subtle way of having redundancy is this kind here, where if you remember in the previous slide we had this operation (B):
 
 ```C++
 /* Granularity Snippet (B) */
@@ -293,9 +291,7 @@ Now the sort of subtle way of having redundancy is this kind here, where if you 
     SetOrientation(Object, Orientation + Change);
 ```
 
-We had this operation (B) where we're getting the orientation, getting the change in the orientation, and then setting it.
-
-![Redundancy - A or B: code snippets labeled A,B,C,D,E,F; we care about E and F in the following body text](images/vlcsnap-2019-09-25-19h17m17s861.png)
+where we're getting the orientation, getting the change in the orientation, and then setting it.
 
 Well if I was to go up a level of granularity from that, I could have the option of bundling those three calls in two different ways:
 
