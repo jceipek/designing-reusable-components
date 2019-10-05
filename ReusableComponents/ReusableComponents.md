@@ -535,7 +535,12 @@ So even if I allow the user to do those operations, I haven't given them any con
 
 If the user actually wanted to separate them out, what they would have to do is make heinously complicated versions of these that do caching behind somebody's back, or God knows what's gonna happen.
 
-The much more decoupled way that very very few APIs do, but some do, is to give you the ability to just pass in some file data. I already read it, I want you to go ahead and interpret this into a thing for me. And that's more what you want to see, because if you want this kind of control, typically you want something that's a lot more like this, where I'm just feeding it chunks and it's interpreting them into the type that I want. 
+The much more decoupled way that very very few APIs do, but some do, is to give you the ability to just pass in some file data (C). I already read it, I want you to go ahead and interpret this into a thing for me. And that's more what you want to see, because if you want this kind of control, typically you want something that's a lot more like this, where I'm just feeding it chunks and it's interpreting them into the type that I want:
+
+```C++
+/* Game-provided services Snippet (C) */
+    Thing = MakeThingFromData(FileData);
+```
 
 Is that the most decoupled we can get? It's not.
 
