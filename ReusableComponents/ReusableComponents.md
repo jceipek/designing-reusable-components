@@ -221,7 +221,7 @@ A simple granularity change (B) is okay, I want to break that down into steps:
 - I want to get the change in orientation myself from the API,
 - and then I want to set the thing with that change (and these are angles or something so that's no overloaded plus operator, it's just a regular 2d angle).
 
-That's the most \[simple?\] sign of granularity.
+That's the most simple kind of granularity.
 The reason that I want that is because, hey, I may want to modify whatever is going to happen in there (C):
 
 ```C++
@@ -437,7 +437,7 @@ Or do we have a situation (B) where the game, which was originally calling the l
    GameUpdate
 ```
 
-Then we could get totally crazy (C) and say a lot of times then, the game has to call the library for something, so we can keep \[at it?\] ad infinitum. If we allow this kind of flow control stuff to happen we can get these ridiculous stacks where I call the library, the library calls me back, I call the library, maybe it calls me back one more time.
+Then we could get totally crazy (C) and say a lot of times then, the game has to call the library for something, so we can keep at it ad infinitum. If we allow this kind of flow control stuff to happen we can get these ridiculous stacks where I call the library, the library calls me back, I call the library, maybe it calls me back one more time.
 This is obviously a negative thing because the more this happens the more complex it is to visualize in your head what's going on in your relationship to this library. Furthermore, it can be really nasty where it has to call back one of your classes or you have to have `void*`s which tell it what the data is that you're going to need inside there because you no longer have your scope. There's a lot of complexity when you start to do some complicated kinds of flow control that aren't just (A).
 
 ![Flow Control - A invokes B: code snippets labeled A,B,C,D](images/vlcsnap-2019-09-25-19h17m49s687.png)
