@@ -575,7 +575,7 @@ But the problem with that is it's still allocating memory, so I get right back t
 /* Game-provided services Snippet (F) */
     Size = GetProcessedSize(RawFileData);
     FileData = malloc(Size);
-    DecompressFile(RawFileData);
+    DecompressFile(RawFileData, FileData);
     Thing = MakeThingFromData(FileData);
 ```
 
@@ -595,7 +595,7 @@ We can still decouple it one further step. This is not necessary all the time, b
 /* Game-provided services Snippet (F) */
     Size = GetProcessedSize(RawFileData);
     FileData = malloc(Size);
-    DecompressFile(RawFileData);
+    ProcessFile(RawFileData, FileData);
     Thing = MakeThingFromData(FileData);
 ```
 
