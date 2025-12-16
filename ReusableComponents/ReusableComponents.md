@@ -244,7 +244,7 @@ And similarly, the less obvious version of that (D) is:
     SetOrientation(Object, Orientation + Change);
 ```
 
-I may not even want to change it, I may want this to happen exactly the same way that it would have if I just called it, but I have this other thing that I want to have happen, so instead of modifying things by inserting myself in the middle, really all I'm doing is I'm separating when the API is going to do those two things and that may not be that important in other industries. But in the game initially that's crucial, because sometimes you thread things, sometimes you have things that you need to hold over till the end of the frame, so you really don't want to be in positions where you don't have that kind of control, so that kind of granularity is also important.
+I may not even want to change it, I may want this to happen exactly the same way that it would have if I just called it, but I have this other thing that I want to have happen, so instead of modifying things by inserting myself in the middle, really all I'm doing is I'm separating when the API is going to do those two things. And that may not be that important in other industries. But in the game industry that's crucial, because sometimes you thread things, sometimes you have things that you need to hold over till the end of the frame, so you really don't want to be in positions where you don't have that kind of control, so that kind of granularity is also important.
 
 ![Redundancy - A or B: code snippets labeled A,B,C,D,E,F in the following body text](images/vlcsnap-2019-09-25-19h16m59s248.png)
 
